@@ -39,3 +39,11 @@
 # restaurant_id
 
 # comment
+
+# Like & Dislike Model
+
+# user_id = FK
+
+# comment_id = FK
+
+# Like or Dislike
