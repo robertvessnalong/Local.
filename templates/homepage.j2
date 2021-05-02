@@ -1,0 +1,35 @@
+{%extends 'base.j2'%}
+{%block title%}Local.{%endblock%}
+{%block content%}
+<section class="hero-section">
+    <div class="hero-content container">
+      <header class="primary-header">
+        <div class="brand">
+          <a href="/">Local.</a>
+        </div>
+        <nav class="primary-nav">
+          <ul>
+            <li>
+              <a href="/register">Register</a>
+              <i class="fa fa-user-plus" aria-hidden="true"></i>
+            </li>
+            <li>
+              <a href="/login">Login</a>
+              <i class="fas fa-sign-in-alt"></i>
+            </li>
+          </ul>
+        </nav>
+      </header>
+      <div class="search">
+        <form action="">
+          <input
+            class="search-input"
+            type="text"
+            placeholder="Find Something Local"
+          />
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+      </div>
+    </div>
+  </section>
+{%endblock%}
