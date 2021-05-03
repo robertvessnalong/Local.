@@ -2,24 +2,38 @@
 {%block title%}Local.{%endblock%}
 {%block content%}
 <section class="hero-section">
-    <div class="hero-content container">
-      <header class="primary-header">
+ <header class="primary-header">
+  <div class="container">
         <div class="brand">
           <a href="/">Local.</a>
         </div>
         <nav class="primary-nav">
           <ul>
+          {% if not session['user_id']%}
             <li>
               <a href="/register">Register</a>
               <i class="fa fa-user-plus" aria-hidden="true"></i>
             </li>
+            {% endif %}
             <li>
+              {% if session['user_id']%}
+              <a href="/logout">Logout</a>
+              <i class="fas fa-sign-out-alt"></i>
+              {%else%}
               <a href="/login">Login</a>
               <i class="fas fa-sign-in-alt"></i>
+              {%endif%}
             </li>
+            {% if session['user_id']%}
+            <li>
+                <a href="/users/{{session['user_id']}}">Profile</a>
+            </li>
+            {%endif%}
           </ul>
         </nav>
+      </div>
       </header>
+    <div class="hero-content container">
       <div class="search">
         <form action="">
           <input

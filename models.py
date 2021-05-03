@@ -33,6 +33,15 @@ class User(db.Model):
         hashed_utf8 = hashed.decode("utf8")
         return cls(first_name = first_name, last_name = last_name, location=location, email=email, password=hashed_utf8)
 
+    @classmethod
+    def authenticate(cls, email, password):
+        user = User.query.filter_by(email=email).first()
+
+        if user and bcrypt.check_password_hash(user.password, password):
+            return user
+        else:
+            return False
+
 
 class Rating(db.Model):
 

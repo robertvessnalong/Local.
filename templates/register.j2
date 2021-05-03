@@ -1,12 +1,14 @@
 {% extends 'base.j2'%}
 {%block title%}Register - Local.{%endblock%}
 {%block content%}
-<div class="container">
- <header class="primary-header d-center">
-    <div class="brand">
-        <a href="/">Local.</a>
+ <header class="primary-header">
+    <div class="container d-center">
+        <div class="brand">
+            <a href="/">Local.</a>
+        </div>
     </div>
 </header>
+<div class="container">
 <form method="POST">
     {{ form.hidden_tag() }}
 
@@ -22,7 +24,7 @@
     </p>
     {% endfor %}
 
-    <button class="btn btn-success" type="submit">Register</button>
+    <button type="submit">Register</button>
 
     </form>
 </div>
