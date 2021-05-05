@@ -3,50 +3,50 @@
 ### A web application that allow users to explore their neighborhood for local restaurants. Built using Python, and Yelp API.
 
 
-# API = https://www.yelp.com/developers
+ API = https://www.yelp.com/developers
 
 # Database Schema
 
 # User Model
 
-# id = PK
+### id = PK
 
-# first_name = Required
+### first_name = Required
 
-# last_name = Required
+### last_name = Required
 
-# location
+### location
 
-# email = Required
+### email = Required
 
-# password = Required
+### password = Required
 
 # Rating Model
 
-# user_id = FK
+### user_id = FK
 
-# restaurant_id
+### restaurant_id
 
-# rating
+### rating
 
 # Favorites Model
 
-# user_id = FK
+### user_id = FK
 
-# restaurant_id
+### restaurant_id
 
 # Comment Model
 
-# user_id = FK
+### user_id = FK
 
-# restaurant_id
+### restaurant_id
 
-# comment
+### comment
 
 # Like & Dislike Model
 
-# user_id = FK
+### user_id = FK
 
-# comment_id = FK
+### comment_id = FK
 
-# Like or Dislike
+### Like or Dislike

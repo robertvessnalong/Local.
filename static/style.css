@@ -103,6 +103,37 @@ li {
   justify-content: center !important;
 }
 
+.top-shelf {
+  background: #f5f5f5;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.top-shelf-content {
+  display: flex;
+  align-items: flex-end;
+}
+
+.user-profile-image {
+  display: block;
+}
+
+.user-profile-info {
+  margin-right: auto;
+  margin-left: 40px;
+}
+
+.user-location {
+  font-weight: 400;
+}
+
+.user-stats {
+  display: flex;
+}
+
+.user-stats li {
+  padding: 10px 15px;
+}
+
 @media screen and (max-width: 575px) {
   .container {
     width: 100%;

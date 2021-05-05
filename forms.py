@@ -14,3 +14,8 @@ class LoginForm(FlaskForm):
     email = StringField('Email', validators=[InputRequired()])
     password = PasswordField('Password', validators=[InputRequired()])
 
+class UpdateUser(FlaskForm):
+    first_name = StringField('First Name', validators=[InputRequired()])
+    last_name = StringField('Last Name', validators=[InputRequired()])
+    location = StringField('Location', validators=[Optional()])
+    email = StringField('Email Address', validators=[Email(), InputRequired()])

@@ -8,7 +8,27 @@
         </div>
     </div>
 </header>
-<div class="container">
-
+<div class="top-shelf"> 
+    <div class="container">
+        <div class="top-shelf-content">
+            <div class="user-profile-image">
+                <img class="user-image" src="https://prospectdirect.com/wpstagemct/wp-content/uploads/2017/05/generic-profile-photo-3.jpg" alt="profile-image">
+            </div>
+            <div class="user-profile-info">
+                <h1>{{user.first_name}} {{user.last_name[0]}}.</h1>
+                <h3 class="user-location">From {{user.location}}</h3>
+                <ul class="user-stats">
+                    <li class="review-count">Reviews: 5</li>
+                    <li class="like-count">Likes: 3</li>
+                </ul>
+            </div>
+            <div class="user-profile-action">
+                <ul>
+                    <li><a href="/users/add_photo">Add Profile Picture</a></li>
+                    <li><a href="/users/{{user.id}}/update">Update Your Profile</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 {%endblock%}

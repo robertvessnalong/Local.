@@ -1,7 +1,7 @@
 
 from flask import Flask, render_template, redirect, flash, session
 from models import db, connect_db, User, Rating, Favorite, Comment, LikeDislike
-from forms import RegisterForm, LoginForm
+from forms import RegisterForm, LoginForm, UpdateUser
 
 
 app = Flask(__name__)
@@ -68,3 +68,24 @@ def user_page(user_id):
 def logout():
     session.pop('user_id')
     return redirect('/')
+
+
+@app.route('/users/<int:user_id>/update', methods=["GET", "POST"])
+def update_user(user_id):
+    if "user_id" not in session:
+        return redirect('/login')
+    user = User.query.get_or_404(user_id)
+    form = UpdateUser(obj=user)
+    if user.id == session['user_id']:
+        if form.validate_on_submit():
+            user.first_name = form.first_name.data
+            user.last_name = form.last_name.data
+            user.location = form.location.data
+            user.email = form.email.data
+            db.session.add(user)
+            db.session.commit()
+            return redirect(f'/users/{user_id}')
+        return render_template('edit_user.j2', form=form, user=user)
+    else:
+        return redirect('/login')
+    
