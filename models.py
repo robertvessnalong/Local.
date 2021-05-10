@@ -2,6 +2,7 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+import math
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -50,6 +51,21 @@ class Rating(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     restaurant_id = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Float, nullable=False, default=0)
+
+    @classmethod
+    def convert_restaurant_rating(cls, rating):
+        rating_data = {
+        'number': 0,
+        'isInt': False
+    }
+        if rating.is_integer():
+            rating_data['number'] = int(rating)
+            rating_data['isInt'] = True
+            return rating_data
+        else:
+            rating['number'] = math.ceil(rating)
+            rating['isInt'] = False
+            return rating_data
 
 class Favorite(db.Model):
 

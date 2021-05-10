@@ -53,7 +53,11 @@ li {
   height: 100%;
 }
 
-.hero-content-inner:before {
+.hero-content-inner {
+  z-index: 20;
+}
+
+/* .hero-content-inner:before {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.0001) 31.42%, #000);
   content: '';
   pointer-events: none;
@@ -62,8 +66,8 @@ li {
   left: 0;
   right: 0;
   top: 0;
-  z-index: 10;
-}
+  z-index: 2;
+} */
 
 .hero-section {
   height: 620px;
@@ -191,5 +195,70 @@ li {
   position: absolute;
   left: 50%;
   top: 50%;
-  background: linear-gradient(to bottom, red, rgba(255, 0, 0, 0));
+}
+
+.hero-section-inner .swiper-slide::after {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.0001) 31.42%, #000);
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1000;
+}
+
+.hero-content-inner .swiper-slide img {
+  height: 100% !important;
+}
+
+.hero-content-info {
+  position: absolute;
+  height: 100%;
+  width: 70%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  z-index: 1000;
+}
+
+.hero-content-info h1 {
+  font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 900;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  color: #fff;
+  font-size: 48px;
+  line-height: 54px;
+  display: inline;
+  z-index: 1000;
+}
+
+.rest-info {
+  margin-bottom: 100px;
+  z-index: 1000;
+}
+
+.fa-star,
+.fa-star-half {
+  color: #fff;
+  font-size: 24px;
+}
+
+.total-reviews {
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 1);
+  text-align: left;
+  margin-left: 6px;
 }

@@ -19,8 +19,26 @@
         </div>
         <div class="container">
           <div class="hero-content-info">
-
-          </div>
+            <div class="rest-info">
+                <h1>{{rest.name}}</h1>
+                    <div class="rating">
+                        {% if rating.isInt == True %}
+                            {% for checked in range(rating.number)%}
+                            <i class="fa fa-star checked"></i>
+                            {%endfor%}
+                        {%elif rating.isInt == False %}
+                            {% for checked in range(rating.number)%}
+                                {% if loop.last %}
+                                    <i class="fas fa-star-half"></i>
+                                {%else%}
+                                    <i class="fa fa-star checked"></i>
+                                {%endif%}
+                            {%endfor%}
+                        {%endif%}
+                       <span class="total-reviews">{{rest.review_count}} Reviews</span>
+                    </div>
+                </div>
+            </div>
         </div>
       </div>
     </div>
