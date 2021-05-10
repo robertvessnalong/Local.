@@ -37,12 +37,32 @@
                         {%endif%}
                        <span class="total-reviews">{{rest.review_count}} Reviews</span>
                     </div>
+                    <div class="price_claimed_type">
+                        <div class="claimed">
+                            {% if rest.is_claimed %}
+                            <i class="fas fa-check-circle"></i>
+                            <span class="claimed-text">Claimed</span>
+                            {% else %}
+                             <span class="unclaimed-text">Unclaimed</span>
+                            <i class="fas fa-exclamation-circle"></i>
+                            {%endif%}
+                        </div>
+                        <div class="price">
+                            <span class="price-info">{{rest['price']}}</span>
+                        </div>
+                        <div class="type">
+                            <span class="type-info">{{rest['categories'][0].title}}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
       </div>
     </div>
   </section>
-
-
+  <section class="main-container">
+    <div class="container">
+        
+    </div>
+  </section>
 {%endblock%}

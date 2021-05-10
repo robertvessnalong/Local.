@@ -244,6 +244,12 @@ li {
   z-index: 1000;
 }
 
+.price_claimed_type {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .fa-star,
 .fa-star-half {
   color: #fff;
@@ -261,4 +267,44 @@ li {
   color: rgba(255, 255, 255, 1);
   text-align: left;
   margin-left: 6px;
+}
+
+.fa-check-circle,
+.claimed-text {
+  font-weight: normal;
+  font-size: 16px !important;
+  line-height: 22px;
+  font-weight: 600;
+  color: rgba(10, 179, 201, 1);
+  text-align: left;
+}
+
+.fa-exclamation-circle,
+.unclaimed-text,
+.type-info {
+  font-weight: normal;
+  line-height: 20px;
+  font-size: 16px !important;
+  line-height: 22px;
+  font-weight: 600;
+  color: #fff;
+  text-align: left;
+}
+
+.price-info {
+  font-size: 16px !important;
+  font-weight: 400;
+  color: #fff;
+  text-align: left;
+  line-height: 22px;
+  position: relative;
+}
+
+.price-info::before,
+.price-info::after {
+  content: '•';
+  top: 0;
+  left: 0;
+  margin-left: 5px;
+  margin-right: 5px;
 }
