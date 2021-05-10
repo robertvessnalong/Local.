@@ -1,0 +1,30 @@
+{% extends 'base.j2'%}
+{%block title%}{{rest.name}} - Local.{%endblock%}
+{%block content%}
+
+<section class="hero-section-inner">
+  <header class="primary-header">
+    <div class="container d-center">
+        <div class="brand">
+            <a href="/">Local.</a>
+        </div>
+    </div>
+</header>
+    <div class="hero-content-inner">
+      <div class="swiper-container mySwiper-Rest-Page">
+        <div class="swiper-wrapper">
+          {% for photo in rest['photos'] %}
+            <div class="swiper-slide"><img src="{{photo}}"></div>
+          {%endfor%}
+        </div>
+        <div class="container">
+          <div class="hero-content-info">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+{%endblock%}

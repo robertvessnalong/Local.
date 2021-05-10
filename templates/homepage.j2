@@ -1,7 +1,7 @@
 {%extends 'base.j2'%}
 {%block title%}Local.{%endblock%}
 {%block content%}
-<section class="hero-section">
+<section class="hero-section-inner">
  <header class="primary-header">
   <div class="container">
         <div class="brand">
@@ -33,16 +33,109 @@
         </nav>
       </div>
       </header>
-    <div class="hero-content container">
-      <div class="search">
-        <form action="">
-          <input
-            class="search-input"
-            type="text"
-            placeholder="Find Something Local"
-          />
-          <button type="submit"><i class="fas fa-search"></i></button>
-        </form>
+    <div class="hero-content">
+      <div class="swiper-container mySwiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide"><img src="static/images/slide-1.jpg"></div>
+          <div class="swiper-slide"><img src="static/images/slide-2.jpg"></div>
+          <div class="swiper-slide"><img src="static/images/slide-3.jpg"></div>
+        </div>
+        <div class="container">
+          <div class="brand-center">
+            <a href="/">Local.</a>
+          </div>
+          <div class="search">
+            <form action="">
+              <input
+                class="search-input"
+                type="text"
+                placeholder="Find Something Local"
+              />
+              <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+ <section class="hot-and-new">
+    <div class="container">
+      <div class="local-rest">
+        <div class="ftco-section">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-12 text-center">
+                <h2 class="heading-section mb-5">Local Near You</h2>
+              </div>
+              <div class="col-md-12">
+                <div class="featured-carousel owl-carousel">
+                <!-- Add For Here -->
+                    <div class="item">
+                      <div class="work">
+                        <div class="img d-flex align-items-end justify-content-center" style="background-image: url('static/images/slide-1.jpg');">
+                          <div class="text w-100">
+                            <span class="cat">Korean</span>
+                            <h3><a href="/restaurant/gR9DTbKCvezQlqvD7_FzPw">Restaurant Name</a></h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="item">
+                      <div class="work">
+                        <div class="img d-flex align-items-end justify-content-center" style="background-image: url('static/images/slide-1.jpg');">
+                          <div class="text w-100">
+                            <span class="cat">Korean</span>
+                            <h3><a href="#">Restaurant Name</a></h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="item">
+                      <div class="work">
+                        <div class="img d-flex align-items-end justify-content-center" style="background-image: url('static/images/slide-1.jpg');">
+                          <div class="text w-100">
+                            <span class="cat">Korean</span>
+                            <h3><a href="#">Restaurant Name</a></h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="item">
+                      <div class="work">
+                        <div class="img d-flex align-items-end justify-content-center" style="background-image: url('static/images/slide-1.jpg');">
+                          <div class="text w-100">
+                            <span class="cat">Korean</span>
+                            <h3><a href="#">Restaurant Name</a></h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="item">
+                      <div class="work">
+                        <div class="img d-flex align-items-end justify-content-center" style="background-image: url('static/images/slide-1.jpg');">
+                          <div class="text w-100">
+                            <span class="cat">Korean</span>
+                            <h3><a href="#">Restaurant Name</a></h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="item">
+                      <div class="work">
+                        <div class="img d-flex align-items-end justify-content-center" style="background-image: url('static/images/slide-1.jpg');">
+                          <div class="text w-100">
+                            <span class="cat">Korean</span>
+                            <h3><a href="#">Restaurant Name</a></h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+            <!-- End For Here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>

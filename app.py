@@ -1,21 +1,41 @@
 
-from flask import Flask, render_template, redirect, flash, session
+from flask import Flask, render_template, redirect, flash, session, jsonify, request
 from models import db, connect_db, User, Rating, Favorite, Comment, LikeDislike
 from forms import RegisterForm, LoginForm, UpdateUser
-
+from ipstack import GeoLookup
+from config import yelp_api_key, ipstack
+import json
+import requests
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///local'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SECRET_KEY'] = 'helloworld'
+geo_lookup = GeoLookup(ipstack)
+location_data = geo_lookup.get_own_location()
 
 connect_db(app)
 db.create_all()
 
+headers = {'Authorization': 'Bearer %s' % yelp_api_key}
+url_search = "https://api.yelp.com/v3/businesses/search"
+url_single = "https://api.yelp.com/v3/businesses/"
+
+
 
 @app.route('/')
-def homepage():  
+def homepage():
+        # new_restaurants = {'categories': 'restaurants',
+        #                    'location': 'Roseville, MI',
+        #                 #    'latitude': location_data['latitude'], 
+        #                 #    'longitude': location_data['longitude'], 
+        #                    'attributes': 'hot_and_new',
+        #                    'limit': 6}
+        # restaurant_request =requests.get(url_search, params=new_restaurants, headers=headers)
+        # data = restaurant_request.json()
+        # return render_template('homepage.j2', rest=data['businesses'])
         return render_template('homepage.j2')
+        
     
 
 @app.route('/register', methods=["GET", "POST"])
@@ -29,7 +49,7 @@ def register():
         password = form.password.data
         register_user = User.register(f_name,
                                       l_name,
-                                      location,
+                                      location or location_data['city'],
                                       email,
                                       password)
         db.session.add(register_user)
@@ -89,3 +109,12 @@ def update_user(user_id):
     else:
         return redirect('/login')
     
+
+
+@app.route('/restaurant/<rest_id>')
+def restaurant_page(rest_id):
+    single_restaurant_url = url_single + f"{rest_id}" 
+    single_rest_request = requests.get(single_restaurant_url,  headers=headers)
+    data = single_rest_request.json()
+    return render_template('restaurant_page.j2', rest=data)
+
