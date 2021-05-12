@@ -77,13 +77,11 @@ class Favorite(db.Model):
 
     __tablename__ = 'favorites'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True) 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    restaurant_id = db.Column(db.Text, db.ForeignKey('restaurant.restaurant_id'))
+    restaurant_id = db.Column(db.Text, db.ForeignKey('restaurant.restaurant_id'), primary_key=True)
 
     def serialize(self):
         return {
-            'id': self.id,
             'user_id': self.user_id,
             'restaurant_id': self.restaurant_id
         }
