@@ -128,7 +128,6 @@ def restaurant_page(rest_id):
 @app.route('/favorite/<rest_id>', methods=['POST'])
 def favorite_restaurant(rest_id):
     if "user_id" not in session:
-        print('Hello World')
         return url_for('login')
     single_restaurant_url = url_single + f"{rest_id}" 
     single_rest_request = requests.get(single_restaurant_url,  headers=headers).json()
@@ -158,7 +157,7 @@ def favorite_restaurant(rest_id):
 @app.route('/favorite/<rest_id>/remove', methods=['DELETE'])
 def remove_favorite(rest_id):
     if "user_id" not in session:
-        return redirect('/login')
+        return url_for('login')
     favorite_restaurant = Favorite.query.filter(Favorite.restaurant_id == rest_id).first()
     db.session.delete(favorite_restaurant)
     db.session.commit()
