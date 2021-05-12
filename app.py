@@ -1,5 +1,6 @@
 
 from flask import Flask, render_template, redirect, flash, session, jsonify, request
+from flask.helpers import url_for
 from models import db, connect_db, User, Rating, Favorite, Comment, LikeDislike, get_store_hours, Restaurant
 from forms import RegisterForm, LoginForm, UpdateUser
 from ipstack import GeoLookup
@@ -115,21 +116,22 @@ def update_user(user_id):
 def restaurant_page(rest_id):
     single_restaurant_url = url_single + f"{rest_id}" 
     single_rest_request = requests.get(single_restaurant_url,  headers=headers).json()
+    time = get_store_hours(single_rest_request)
     rating = Rating.convert_restaurant_rating(single_rest_request['rating'])
     if 'user_id' in session:
         user = User.query.get_or_404(session['user_id'])
         favorite = [favorite.restaurant_id for favorite in user.favorites if favorite.restaurant_id == rest_id]
-    time = get_store_hours(single_rest_request)
-    return render_template('restaurant_page.j2', rest=single_rest_request, rating=rating, time=time, favorite=favorite)
+        return render_template('restaurant_page.j2', rest=single_rest_request, rating=rating, time=time, favorite=favorite)
+    return render_template('restaurant_page.j2', rest=single_rest_request, rating=rating, time=time)
 
 
 @app.route('/favorite/<rest_id>', methods=['POST'])
 def favorite_restaurant(rest_id):
     if "user_id" not in session:
-        return redirect('/login')
+        print('Hello World')
+        return url_for('login')
     single_restaurant_url = url_single + f"{rest_id}" 
     single_rest_request = requests.get(single_restaurant_url,  headers=headers).json()
-    print(single_rest_request)
     favorite = Favorite(user_id = session['user_id'], restaurant_id = rest_id)
     if single_rest_request['categories']:
         for category in single_rest_request['categories']:
@@ -147,8 +149,8 @@ def favorite_restaurant(rest_id):
                             isInt= Rating.convert_restaurant_rating(single_rest_request['rating'])['isInt'])
         db.session.add(restaurant)
         db.session.commit()
-    db.session.add(favorite)
-    db.session.commit()
+        db.session.add(favorite)
+        db.session.commit()
     response_json = jsonify(favorite=favorite.serialize())
     return (response_json, 201)
 

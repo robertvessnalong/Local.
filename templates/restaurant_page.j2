@@ -95,11 +95,15 @@
                     <li href="/review" class="review-btn">Write A Review</li>
                 </div>
                 <div class="favorite">
+                {% if session['user_id'] %}
                    {% if favorite[0] == rest.id %}
                         <li data-id={{rest.id}} class="favorite-btn"><i class="fas fa-heart"></i> Favorite</li>
                    {%else %}
                         <li data-id="{{rest.id}}" class="favorite-btn"><i class="far fa-heart"></i>  Favorite</li>
                    {%endif%}
+                   {%else%}
+                        <li data-id={{rest.id}} class="favorite-btn"><i class="far fa-heart"></i> Favorite</li>
+                {%endif %}
                 </div>
             </div>
         </header>

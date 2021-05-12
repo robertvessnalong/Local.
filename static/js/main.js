@@ -56,10 +56,18 @@ async function handleFavorite() {
   const id = $(this).data('id');
   const i = $('.favorite-btn i');
   if ($('.favorite-btn i').hasClass('fas fa-heart')) {
-    await axios.delete(`/favorite/${id}/remove`);
+    await axios.delete(`/favorite/${id}/remove`).then(function (response) {
+      if (response.data == '/login') {
+        window.location = response.data;
+      }
+    });
     $('.favorite-btn i').attr('class', 'far fa-heart');
   } else if ($('.favorite-btn i').hasClass('far fa-heart')) {
-    await axios.post(`/favorite/${id}`);
+    await axios.post(`/favorite/${id}`).then(function (response) {
+      if (response.data == '/login') {
+        window.location = response.data;
+      }
+    });
     $('.favorite-btn i').attr('class', 'fas fa-heart');
   }
 }
