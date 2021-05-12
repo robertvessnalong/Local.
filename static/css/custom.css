@@ -15,6 +15,10 @@ a {
   text-decoration: none;
 }
 
+a:hover {
+  color: #fff;
+}
+
 li {
   list-style: none;
 }
@@ -235,19 +239,24 @@ li {
   color: #fff;
   font-size: 48px;
   line-height: 54px;
-  display: inline;
-  z-index: 1000;
+  display: inline-block;
+  margin-bottom: 10px;
 }
 
 .rest-info {
-  margin-bottom: 100px;
-  z-index: 1000;
+  padding-bottom: 25px;
+  padding-top: 25px;
 }
 
-.price_claimed_type {
+.price_claimed_type,
+.status_time {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.rating {
+  margin-bottom: 6px;
 }
 
 .fa-star,
@@ -257,7 +266,7 @@ li {
 }
 
 .total-reviews {
-  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Open Sansra', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: normal;
   font-size: 14px;
   line-height: 20px;
@@ -281,7 +290,10 @@ li {
 
 .fa-exclamation-circle,
 .unclaimed-text,
-.type-info {
+.type-info,
+.is_open,
+.is_closed,
+.hours {
   font-weight: normal;
   line-height: 20px;
   font-size: 16px !important;
@@ -307,4 +319,71 @@ li {
   left: 0;
   margin-left: 5px;
   margin-right: 5px;
+}
+
+.is_open {
+  color: rgba(5, 168, 130, 1) !important;
+}
+
+.is_closed {
+  color: rgba(244, 57, 57, 1) !important;
+}
+
+.hours {
+  margin-left: 10px;
+}
+
+.review-btn,
+.favorite-btn {
+  border: 0;
+  border-radius: 4px;
+  box-shadow: none;
+  cursor: pointer;
+  height: 40px;
+  margin: 0;
+  padding-bottom: 8px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 8px;
+  position: relative;
+  text-align: center;
+  background-color: rgba(244, 57, 57, 1);
+  color: rgba(255, 255, 255, 1);
+}
+
+.favorite-btn {
+  background-color: transparent;
+  border: 1px solid rgba(187, 186, 192, 1);
+  color: rgba(43, 39, 60, 1);
+  margin-left: 6px;
+  text-align: center;
+}
+
+.favorite-btn:hover {
+  color: rgba(43, 39, 60, 1);
+}
+
+.main-content-inner {
+  margin-top: 60px;
+}
+
+.main-content-inner .container {
+  width: 70% !important;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: row;
+}
+
+.category {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 2px;
+  margin-left: 10px;
+}
+
+.single {
+  margin-left: 5px;
 }

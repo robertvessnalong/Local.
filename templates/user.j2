@@ -19,7 +19,7 @@
                 <h3 class="user-location">From {{user.location}}</h3>
                 <ul class="user-stats">
                     <li class="review-count">Reviews: 5</li>
-                    <li class="like-count">Likes: 3</li>
+                    <li class="like-count">Likes: {{user.favorites | length}} </li>
                 </ul>
             </div>
             <div class="user-profile-action">

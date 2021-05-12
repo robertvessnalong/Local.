@@ -3,6 +3,10 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 import math
+from datetime import date, datetime
+import calendar
+
+from sqlalchemy.orm import backref
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -42,6 +46,8 @@ class User(db.Model):
             return user
         else:
             return False
+        
+    favorites = db.relationship('Favorite', backref="users")
 
 
 class Rating(db.Model):
@@ -63,15 +69,16 @@ class Rating(db.Model):
             rating_data['isInt'] = True
             return rating_data
         else:
-            rating['number'] = math.ceil(rating)
-            rating['isInt'] = False
+            rating_data['number'] = math.ceil(rating)
+            rating_data['isInt'] = False
             return rating_data
 
 class Favorite(db.Model):
 
     __tablename__ = 'favorites'
-
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True) 
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     restaurant_id = db.Column(db.Text, nullable=False)
 
 class Comment(db.Model):
@@ -90,3 +97,23 @@ class LikeDislike(db.Model):
     comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'), primary_key=True)
     likeordislike = db.Column(db.Text)
 
+
+
+def get_store_hours(store_hours):
+    days = ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    data = {}
+    if 'hours' in store_hours:
+        data['is_open_now'] =  store_hours['hours'][0]['is_open_now']
+        current_date = date.today()
+        current_day = calendar.day_name[current_date.weekday()]
+        for hours in store_hours['hours'][0]['open']:
+            if hours['day'] == days.index(current_day):
+                convert_time_start = datetime.strptime(hours['start'], "%H%M")
+                formated_start = convert_time_start.strftime("%-I:%M %p")
+                convert_time_end = datetime.strptime(hours['end'], "%H%M")
+                formated_end = convert_time_end.strftime("%I:%M %p")
+                data['start'] = formated_start
+                data['end'] = formated_end 
+                return data
+   
+            

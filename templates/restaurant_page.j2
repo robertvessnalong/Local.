@@ -17,8 +17,8 @@
             <div class="swiper-slide"><img src="{{photo}}"></div>
           {%endfor%}
         </div>
-        <div class="container">
           <div class="hero-content-info">
+           <div class="container">
             <div class="rest-info">
                 <h1>{{rest.name}}</h1>
                     <div class="rating">
@@ -47,22 +47,62 @@
                             <i class="fas fa-exclamation-circle"></i>
                             {%endif%}
                         </div>
+                        {%if rest['price']%}
                         <div class="price">
                             <span class="price-info">{{rest['price']}}</span>
                         </div>
+                        {%endif%}
                         <div class="type">
+                            {% if rest['price']%}
                             <span class="type-info">{{rest['categories'][0].title}}</span>
+                            {%else%}
+                            <ul class="category">
+                            {% for category in rest['categories']%}
+                                {%if loop.last%}
+                                    <li class="type-info single">{{category.title}}</li>
+                                {% else %}
+                                    <li class="type-info single">{{category.title}},</li>
+                                {%endif%}
+                            {%endfor%}
+                            </ul>
+                            {%endif%}
                         </div>
                     </div>
+                    {% if time['is_open_now'] %}
+                        <div class="status_time">
+                            <div class="status">
+                                {% if time.is_open_now %}
+                                <span class="is_open">Open</span>
+                                {%else%}
+                                <span class="is_closed">Closed</span>
+                                {%endif%}
+                            </div>
+                            <div class="time">
+                                <span class="hours">{{time.start}} - {{time.end}}</span>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
-      </div>
     </div>
   </section>
-  <section class="main-container">
+  <section class="main-content-inner">
     <div class="container">
-        
+        <header class="header-buttons">
+            <div class="action-buttons">
+                <div class="review">
+                    <a href="/review" class="review-btn">Write A Review</a>
+                </div>
+                <div class="favorite">
+                    {% if favorites %}
+                        <a href="/favorite/{{rest.id}}/remove" class="favorite-btn"><i class="fas fa-heart"></i> Favorite</a>
+                    {% else %}
+                            <a href="/favorite/{{rest.id}}" class="favorite-btn"><i class="far fa-heart"></i>  Favorite</a>
+                    {%endif%}
+                </div>
+            </div>
+        </header>
     </div>
   </section>
 {%endblock%}

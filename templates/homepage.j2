@@ -1,7 +1,7 @@
 {%extends 'base.j2'%}
 {%block title%}Local.{%endblock%}
 {%block content%}
-<section class="hero-section-inner">
+<section class="hero-section">
  <header class="primary-header">
   <div class="container">
         <div class="brand">
@@ -70,27 +70,19 @@
               <div class="col-md-12">
                 <div class="featured-carousel owl-carousel">
                 <!-- Add For Here -->
+                {% for shop in rest%}
                     <div class="item">
                       <div class="work">
-                        <div class="img d-flex align-items-end justify-content-center" style="background-image: url('static/images/slide-1.jpg');">
+                        <div class="img d-flex align-items-end justify-content-center" style="background-image: url('{{shop.image_url}}');">
                           <div class="text w-100">
-                            <span class="cat">Korean</span>
-                            <h3><a href="/restaurant/gR9DTbKCvezQlqvD7_FzPw">Restaurant Name</a></h3>
+                            <span class="cat">{{shop['categories'][0]['title']}}</span>
+                            <h3><a href="/restaurant/{{shop.id}}">{{shop.name}}</a></h3>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="item">
-                      <div class="work">
-                        <div class="img d-flex align-items-end justify-content-center" style="background-image: url('static/images/slide-1.jpg');">
-                          <div class="text w-100">
-                            <span class="cat">Korean</span>
-                            <h3><a href="#">Restaurant Name</a></h3>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="item">
+                    {% endfor %}
+                <!-- <div class="item">
                       <div class="work">
                         <div class="img d-flex align-items-end justify-content-center" style="background-image: url('static/images/slide-1.jpg');">
                           <div class="text w-100">
@@ -130,6 +122,16 @@
                         </div>
                       </div>
                     </div>
+                    <div class="item">
+                      <div class="work">
+                        <div class="img d-flex align-items-end justify-content-center" style="background-image: url('static/images/slide-1.jpg');">
+                          <div class="text w-100">
+                            <span class="cat">Korean</span>
+                            <h3><a href="#">Restaurant Name</a></h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div> -->
             <!-- End For Here -->
                 </div>
               </div>

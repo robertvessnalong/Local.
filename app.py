@@ -1,6 +1,6 @@
 
 from flask import Flask, render_template, redirect, flash, session, jsonify, request
-from models import db, connect_db, User, Rating, Favorite, Comment, LikeDislike
+from models import db, connect_db, User, Rating, Favorite, Comment, LikeDislike, get_store_hours
 from forms import RegisterForm, LoginForm, UpdateUser
 from ipstack import GeoLookup
 from config import yelp_api_key, ipstack
@@ -23,18 +23,17 @@ url_single = "https://api.yelp.com/v3/businesses/"
 
 
 
+
 @app.route('/')
 def homepage():
-        # new_restaurants = {'categories': 'restaurants',
-        #                    'location': 'Roseville, MI',
-        #                 #    'latitude': location_data['latitude'], 
-        #                 #    'longitude': location_data['longitude'], 
-        #                    'attributes': 'hot_and_new',
-        #                    'limit': 6}
-        # restaurant_request =requests.get(url_search, params=new_restaurants, headers=headers)
-        # data = restaurant_request.json()
-        # return render_template('homepage.j2', rest=data['businesses'])
-        return render_template('homepage.j2')
+        new_restaurants = {'categories': 'restaurants',
+                           'latitude': location_data['latitude'], 
+                           'longitude': location_data['longitude'], 
+                           'attributes': 'hot_and_new',
+                           'limit': 10}
+        restaurant_request =requests.get(url_search, params=new_restaurants, headers=headers)
+        data = restaurant_request.json()
+        return render_template('homepage.j2', rest=data['businesses'])
         
     
 
@@ -113,107 +112,32 @@ def update_user(user_id):
 
 @app.route('/restaurant/<rest_id>')
 def restaurant_page(rest_id):
-    # single_restaurant_url = url_single + f"{rest_id}" 
-    # single_rest_request = requests.get(single_restaurant_url,  headers=headers)
-    
-    data = {
-    "id": "gR9DTbKCvezQlqvD7_FzPw",
-    "alias": "north-india-restaurant-san-francisco",
-    "name": "North India Restaurant",
-    "image_url": "https://s3-media4.fl.yelpcdn.com/bphoto/8713LkYA3USvWj9z4Yokjw/o.jpg",
-    "is_claimed": True,
-    "is_closed": False,
-    "url": "https://www.yelp.com/biz/north-india-restaurant-san-francisco?adjust_creative=srFoJHnY-90t-yQ13y0aEw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_lookup&utm_source=srFoJHnY-90t-yQ13y0aEw",
-    "phone": "+14153481234",
-    "display_phone": "(415) 348-1234",
-    "review_count": 1779,
-    "categories": [
-        {
-            "alias": "indpak",
-            "title": "Indian"
-        }
-    ],
-    "rating": 4.0,
-    "location": {
-        "address1": "123 Second St",
-        "address2": "",
-        "address3": "",
-        "city": "San Francisco",
-        "zip_code": "94105",
-        "country": "US",
-        "state": "CA",
-        "display_address": [
-            "123 Second St",
-            "San Francisco, CA 94105"
-        ],
-        "cross_streets": ""
-    },
-    "coordinates": {
-        "latitude": 37.787789124691,
-        "longitude": -122.399305736113
-    },
-    "photos": [
-        "https://s3-media4.fl.yelpcdn.com/bphoto/8713LkYA3USvWj9z4Yokjw/o.jpg",
-        "https://s3-media4.fl.yelpcdn.com/bphoto/W2oBBWPGm3bRYEuHKGMtCw/o.jpg",
-        "https://s3-media1.fl.yelpcdn.com/bphoto/YrS539sVhmyOZcowdJsP_Q/o.jpg"
-    ],
-    "price": "$$",
-    "hours": [
-        {
-            "open": [
-                {
-                    "is_overnight": False,
-                    "start": "1000",
-                    "end": "2300",
-                    "day": 0
-                },
-                {
-                    "is_overnight": False,
-                    "start": "1000",
-                    "end": "2300",
-                    "day": 1
-                },
-                {
-                    "is_overnight": False,
-                    "start": "1000",
-                    "end": "2300",
-                    "day": 2
-                },
-                {
-                    "is_overnight": False,
-                    "start": "1000",
-                    "end": "2300",
-                    "day": 3
-                },
-                {
-                    "is_overnight": False,
-                    "start": "1000",
-                    "end": "2330",
-                    "day": 4
-                },
-                {
-                    "is_overnight": False,
-                    "start": "1000",
-                    "end": "2330",
-                    "day": 5
-                },
-                {
-                    "is_overnight": False,
-                    "start": "1000",
-                    "end": "2300",
-                    "day": 6
-                }
-            ],
-            "hours_type": "REGULAR",
-            "is_open_now": True
-        }
-    ],
-    "transactions": [
-        "pickup",
-        "delivery",
-        "restaurant_reservation"
-    ]
-}
-    rating = Rating.convert_restaurant_rating(data['rating'])
-    return render_template('restaurant_page.j2', rest=data, rating=rating)
+    single_restaurant_url = url_single + f"{rest_id}" 
+    single_rest_request = requests.get(single_restaurant_url,  headers=headers).json()
+    rating = Rating.convert_restaurant_rating(single_rest_request['rating'])
+    user = User.query.get_or_404(session['user_id'])
+    user_favorites = Favorite.query.filter(Favorite.user_id == user.id).all()
+    favorite = [favorite for favorite in user_favorites if favorite.restaurant_id == rest_id]
+    time = get_store_hours(single_rest_request)
+    return render_template('restaurant_page.j2', rest=single_rest_request, rating=rating, time=time, favorites=favorite)
 
+
+@app.route('/favorite/<rest_id>')
+def favorite_restaurant(rest_id):
+    if "user_id" not in session:
+        return redirect('/login')
+    user = User.query.get_or_404(session['user_id'])
+    favorite = Favorite(user_id = user.id, restaurant_id = rest_id)
+    db.session.add(favorite)
+    db.session.commit()
+    return redirect(f'/restaurant/{rest_id}')
+
+
+@app.route('/favorite/<rest_id>/remove')
+def remove_favorite(rest_id):
+    if "user_id" not in session:
+        return redirect('/login')
+    favorite_restaurant = Favorite.query.filter(Favorite.restaurant_id == rest_id).first()
+    db.session.delete(favorite_restaurant)
+    db.session.commit()
+    return redirect(f'/restaurant/{rest_id}')
