@@ -76,10 +76,34 @@ class Rating(db.Model):
 class Favorite(db.Model):
 
     __tablename__ = 'favorites'
-    
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True) 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    restaurant_id = db.Column(db.Text, nullable=False)
+    restaurant_id = db.Column(db.Text, db.ForeignKey('restaurant.restaurant_id'))
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'restaurant_id': self.restaurant_id
+        }
+        
+
+class Restaurant(db.Model):
+
+    __tablename__ = 'restaurant'
+
+    restaurant_id = db.Column(db.Text, nullable=False, primary_key=True)
+    image_url = db.Column(db.Text, nullable=False)
+    name = db.Column(db.Text, nullable=False)
+    price_count = db.Column(db.Text)
+    categories = db.Column(db.Text)
+    total_reviews = db.Column(db.Integer)
+    modified_rating = db.Column(db.Integer)
+    isInt = db.Column(db.Boolean)
+
+
+
 
 class Comment(db.Model):
 

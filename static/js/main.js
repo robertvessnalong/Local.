@@ -51,3 +51,17 @@ let swiper = new Swiper('.mySwiper', {
 let swiperRestPage = new Swiper('.mySwiper-Rest-Page', {
   slidesPerView: 3,
 });
+
+async function handleFavorite() {
+  const id = $(this).data('id');
+  const i = $('.favorite-btn i');
+  if ($('.favorite-btn i').hasClass('fas fa-heart')) {
+    await axios.delete(`/favorite/${id}/remove`);
+    $('.favorite-btn i').attr('class', 'far fa-heart');
+  } else if ($('.favorite-btn i').hasClass('far fa-heart')) {
+    await axios.post(`/favorite/${id}`);
+    $('.favorite-btn i').attr('class', 'fas fa-heart');
+  }
+}
+
+$('.favorite-btn').on('click', handleFavorite);

@@ -1,6 +1,6 @@
 
 from flask import Flask, render_template, redirect, flash, session, jsonify, request
-from models import db, connect_db, User, Rating, Favorite, Comment, LikeDislike, get_store_hours
+from models import db, connect_db, User, Rating, Favorite, Comment, LikeDislike, get_store_hours, Restaurant
 from forms import RegisterForm, LoginForm, UpdateUser
 from ipstack import GeoLookup
 from config import yelp_api_key, ipstack
@@ -20,7 +20,6 @@ db.create_all()
 headers = {'Authorization': 'Bearer %s' % yelp_api_key}
 url_search = "https://api.yelp.com/v3/businesses/search"
 url_single = "https://api.yelp.com/v3/businesses/"
-
 
 
 
@@ -77,8 +76,10 @@ def user_page(user_id):
     if "user_id" not in session:
         return redirect('/')
     user = User.query.get_or_404(user_id)
+    user_favorited = [favorited.restaurant_id for favorited in user.favorites]
+    rest_favorited = Restaurant.query.filter(Restaurant.restaurant_id.in_(user_favorited)).all()
     if user.id == session['user_id']:
-        return render_template('user.j2', user=user)
+        return render_template('user.j2', user=user, favorite=rest_favorited)
     else:
         return redirect('/')
     
@@ -115,29 +116,48 @@ def restaurant_page(rest_id):
     single_restaurant_url = url_single + f"{rest_id}" 
     single_rest_request = requests.get(single_restaurant_url,  headers=headers).json()
     rating = Rating.convert_restaurant_rating(single_rest_request['rating'])
-    user = User.query.get_or_404(session['user_id'])
-    user_favorites = Favorite.query.filter(Favorite.user_id == user.id).all()
-    favorite = [favorite for favorite in user_favorites if favorite.restaurant_id == rest_id]
+    if 'user_id' in session:
+        user = User.query.get_or_404(session['user_id'])
+        favorite = [favorite.restaurant_id for favorite in user.favorites if favorite.restaurant_id == rest_id]
     time = get_store_hours(single_rest_request)
-    return render_template('restaurant_page.j2', rest=single_rest_request, rating=rating, time=time, favorites=favorite)
+    return render_template('restaurant_page.j2', rest=single_rest_request, rating=rating, time=time, favorite=favorite)
 
 
-@app.route('/favorite/<rest_id>')
+@app.route('/favorite/<rest_id>', methods=['POST'])
 def favorite_restaurant(rest_id):
     if "user_id" not in session:
         return redirect('/login')
-    user = User.query.get_or_404(session['user_id'])
-    favorite = Favorite(user_id = user.id, restaurant_id = rest_id)
+    single_restaurant_url = url_single + f"{rest_id}" 
+    single_rest_request = requests.get(single_restaurant_url,  headers=headers).json()
+    print(single_rest_request)
+    favorite = Favorite(user_id = session['user_id'], restaurant_id = rest_id)
+    if single_rest_request['categories']:
+        for category in single_rest_request['categories']:
+            categories = f"{category['title']}"
+    else:
+        categories = None
+    if not Restaurant.query.get(rest_id):
+        restaurant = Restaurant(restaurant_id=single_rest_request['id'],
+                            image_url=single_rest_request['image_url'],
+                            name=single_rest_request['name'],
+                            price_count=  single_rest_request if 'has_key' in single_rest_request else None,
+                            categories=categories,
+                            total_reviews=single_rest_request['review_count'],
+                            modified_rating= Rating.convert_restaurant_rating(single_rest_request['rating'])['number'],
+                            isInt= Rating.convert_restaurant_rating(single_rest_request['rating'])['isInt'])
+        db.session.add(restaurant)
+        db.session.commit()
     db.session.add(favorite)
     db.session.commit()
-    return redirect(f'/restaurant/{rest_id}')
+    response_json = jsonify(favorite=favorite.serialize())
+    return (response_json, 201)
 
 
-@app.route('/favorite/<rest_id>/remove')
+@app.route('/favorite/<rest_id>/remove', methods=['DELETE'])
 def remove_favorite(rest_id):
     if "user_id" not in session:
         return redirect('/login')
     favorite_restaurant = Favorite.query.filter(Favorite.restaurant_id == rest_id).first()
     db.session.delete(favorite_restaurant)
     db.session.commit()
-    return redirect(f'/restaurant/{rest_id}')
+    return jsonify(message="Favorite Removed")

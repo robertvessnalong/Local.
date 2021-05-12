@@ -92,14 +92,14 @@
         <header class="header-buttons">
             <div class="action-buttons">
                 <div class="review">
-                    <a href="/review" class="review-btn">Write A Review</a>
+                    <li href="/review" class="review-btn">Write A Review</li>
                 </div>
                 <div class="favorite">
-                    {% if favorites %}
-                        <a href="/favorite/{{rest.id}}/remove" class="favorite-btn"><i class="fas fa-heart"></i> Favorite</a>
-                    {% else %}
-                            <a href="/favorite/{{rest.id}}" class="favorite-btn"><i class="far fa-heart"></i>  Favorite</a>
-                    {%endif%}
+                   {% if favorite[0] == rest.id %}
+                        <li data-id={{rest.id}} class="favorite-btn"><i class="fas fa-heart"></i> Favorite</li>
+                   {%else %}
+                        <li data-id="{{rest.id}}" class="favorite-btn"><i class="far fa-heart"></i>  Favorite</li>
+                   {%endif%}
                 </div>
             </div>
         </header>

@@ -8,7 +8,7 @@
         </div>
     </div>
 </header>
-<div class="top-shelf"> 
+<section class="top-shelf"> 
     <div class="container">
         <div class="top-shelf-content">
             <div class="user-profile-image">
@@ -30,5 +30,34 @@
             </div>
         </div>
     </div>
-</div>
+</section>
+<section class="review_favorites">
+    <div class="container">
+        <div class="reviews">
+            <header class="content-header">
+                <h3>Your Recent Reviews</h3>
+            </header>
+            <div class="review-container">
+
+            </div>
+        </div>
+        <div class="favorites">
+            <header class="content-header">
+                <h3>Your Favorites</h3>
+            </header>
+            <div class="favorite-container">
+                {%for favorite in favorite%}
+                    <div class="card bg-dark text-white">
+                    <img class="card-img" src="{{favorite['image_url']}}" alt="Card image">
+                    <div class="card-img-overlay">
+                        <h5 class="card-title">{{favorite['name']}}</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        <p class="card-text">Last updated 3 mins ago</p>
+                    </div>
+                    </div>
+                {%endfor%}
+            </div>
+        </div>
+    </div>
+</section>
 {%endblock%}
