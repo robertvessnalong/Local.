@@ -148,8 +148,8 @@ def favorite_restaurant(rest_id):
                             isInt= Rating.convert_restaurant_rating(single_rest_request['rating'])['isInt'])
         db.session.add(restaurant)
         db.session.commit()
-        db.session.add(favorite)
-        db.session.commit()
+    db.session.add(favorite)
+    db.session.commit()
     response_json = jsonify(favorite=favorite.serialize())
     return (response_json, 201)
 

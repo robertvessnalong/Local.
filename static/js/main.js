@@ -59,16 +59,18 @@ async function handleFavorite() {
     await axios.delete(`/favorite/${id}/remove`).then(function (response) {
       if (response.data == '/login') {
         window.location = response.data;
+      } else {
+        $('.favorite-btn i').attr('class', 'far fa-heart');
       }
     });
-    $('.favorite-btn i').attr('class', 'far fa-heart');
   } else if ($('.favorite-btn i').hasClass('far fa-heart')) {
     await axios.post(`/favorite/${id}`).then(function (response) {
       if (response.data == '/login') {
         window.location = response.data;
+      } else {
+        $('.favorite-btn i').attr('class', 'fas fa-heart');
       }
     });
-    $('.favorite-btn i').attr('class', 'fas fa-heart');
   }
 }
 
