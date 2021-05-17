@@ -379,7 +379,8 @@ footer {
 
 .review-btn,
 .favorite-btn,
-.edit-btn {
+.edit-btn,
+.delete-btn {
   border: 0;
   border-radius: 4px;
   box-shadow: none;
@@ -397,7 +398,8 @@ footer {
 }
 
 .favorite-btn,
-.edit-btn {
+.edit-btn,
+.delete-btn {
   background-color: transparent;
   border: 1px solid rgba(187, 186, 192, 1);
   color: rgba(43, 39, 60, 1);
@@ -405,9 +407,22 @@ footer {
   text-align: center;
 }
 
-.edit-btn {
+.edit-btn,
+.delete-btn {
   margin-top: 10px;
-  width: 50%;
+}
+
+.review-buttons {
+  display: flex;
+}
+
+.fa-trash {
+  margin-left: 6px;
+}
+
+.delete-btn {
+  background-color: rgba(244, 57, 57, 1);
+  color: rgba(255, 255, 255, 1);
 }
 
 .favorite-btn:hover {

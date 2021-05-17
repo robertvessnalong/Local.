@@ -177,7 +177,7 @@ def write_review():
                             created=json['created_at'])
         db.session.add(new_review)
         db.session.commit()
-        print(new_review['id'])
+        print(new_review.user)
         success = {'success': 'Your Review is Posted',
                    'created_at':json['created_at'],
                    'user': {
@@ -200,3 +200,8 @@ def update_review(review_id):
     print(json)
     return url_for('login')
 
+
+@app.route('/review/<review_id>', methods=['DELETE'])
+def delete_review(review_id):
+    if "user_id" not in session:
+        return url_for('login')

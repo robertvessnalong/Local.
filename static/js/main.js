@@ -106,8 +106,12 @@ function showReviewSection() {
 
 function showEditSection(event) {
   if ($(event.target).hasClass('edit-btn')) {
-    $(this).parent().next().toggleClass('show');
-    editRatingsContainer = $(this).parent().next().find('.edit-ratings i');
+    $(this).parent().parent().next().toggleClass('show');
+    editRatingsContainer = $(this)
+      .parent()
+      .parent()
+      .next()
+      .find('.edit-ratings i');
     currentStar = [];
     $(editRatingsContainer).each(function (index) {
       if (this.className == 'fas fa-star') {
@@ -193,6 +197,8 @@ async function handleEditReview(event) {
     });
   $('.edit-review').removeClass('show');
 }
+
+async function deleteReview(event) {}
 
 function generateReview(data, generateStars, review) {
   const $reviewContainer = $('#review-items');

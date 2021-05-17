@@ -179,8 +179,14 @@
                             </div>
                         </div>
                         {%if session['user_id'] == review.users.id%}
-                        <div class="edit-button">
-                            <li class="edit-btn">Edit Review</li>
+                        <div class="review-buttons">
+                            <div class="edit-button">
+                                <li class="edit-btn">Edit Review</li>
+                            </div>
+                            <div class="delete-button">
+                                <li class="delete-btn">Delete<i class="fas fa-trash"></i></li>
+                                
+                            </div>
                         </div>
                         <div class="edit-review">
                             <form id="edit-form" method="GET" action="/">
