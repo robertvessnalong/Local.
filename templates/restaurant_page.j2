@@ -2,14 +2,35 @@
 {%block title%}{{rest.name}} - Local.{%endblock%}
 {%block content%}
 
-<section class="hero-section-inner">
-  <header class="primary-header">
-    <div class="container d-center">
+<header class="primary-header-inner">
+    <div class="container">
         <div class="brand">
             <a href="/">Local.</a>
         </div>
+        <div class="search-inner">
+            <form action="">
+                <input
+                class="search-input-inner"
+                type="text"
+                placeholder="Find Something Local"
+                />
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+         {%if session['user_id']%}
+        <div class="profile-btn">
+            <a href="/users/{{session['user_id']}}">Profile</a>
+        </div>
+        {%else%}
+        <div class="login-btn">
+            <a href="/login">Login</a>
+            <i class="fas fa-sign-in-alt"></i>
+        </div>
+        {%endif%}
     </div>
 </header>
+
+<section class="hero-section-inner">
     <div class="hero-content-inner">
       <div class="swiper-container mySwiper-Rest-Page">
         <div class="swiper-wrapper">
@@ -87,26 +108,102 @@
         </div>
     </div>
   </section>
-  <section class="main-content-inner">
-    <div class="container">
-        <header class="header-buttons">
-            <div class="action-buttons">
-                <div class="review">
-                    <li href="/review" class="review-btn">Write A Review</li>
+  <main class="main-content-inner">
+    <section class="button-container">
+        <div class="container">
+            <header class="header-buttons">
+                <div class="action-buttons">
+                    <div class="review-container">
+                        <li href="/review" class="review-btn">Write A Review</li>
+                    </div>
+                    <div class="favorite">
+                    {% if session['user_id'] %}
+                    {% if favorite[0] == rest.id %}
+                            <li data-id={{rest.id}} class="favorite-btn"><i class="fas fa-heart"></i> Favorite</li>
+                    {%else %}
+                            <li data-id="{{rest.id}}" class="favorite-btn"><i class="far fa-heart"></i>  Favorite</li>
+                    {%endif%}
+                    {%else%}
+                            <li data-id={{rest.id}} class="favorite-btn"><i class="far fa-heart"></i> Favorite</li>
+                    {%endif %}
+                    </div>
                 </div>
-                <div class="favorite">
-                {% if session['user_id'] %}
-                   {% if favorite[0] == rest.id %}
-                        <li data-id={{rest.id}} class="favorite-btn"><i class="fas fa-heart"></i> Favorite</li>
-                   {%else %}
-                        <li data-id="{{rest.id}}" class="favorite-btn"><i class="far fa-heart"></i>  Favorite</li>
-                   {%endif%}
-                   {%else%}
-                        <li data-id={{rest.id}} class="favorite-btn"><i class="far fa-heart"></i> Favorite</li>
-                {%endif %}
+            </header>
+            <div class="review-comment">
+                <h5>Review {{rest.name}}</h5>
+                <form id="review-form" method="GET" action="/">
+                    <div class="star-ratings">
+                        {% for checked in range(0, 5)%}
+                            <i class="far fa-star"></i>
+                        {%endfor%}
+                    </div>
+                    <textarea id="restaurant-review" maxlength="180" class="form-control" rows="3" placeholder="Write Your Review"></textarea>
+                    <p class="max-char">Max 180 Characters</p>
+                    <input class="review-btn add" type="submit" value="Add Review">
+                </form>
+            </div>
+        </div>
+    </section>
+    <section class="review-feed">
+        <div class="container">
+            <div class="row">
+                <div id="review-items"class="col-lg-8">
+                {% for review in reviews %}
+                     <div data-id="{{review.id}}" class="review-item">
+                        <div class="review_user">
+                            <div class="user_image">
+                                <img class="reviewer-image" src="https://prospectdirect.com/wpstagemct/wp-content/uploads/2017/05/generic-profile-photo-3.jpg">
+                            </div>
+                            <div class="review-content">
+                                <div class="reviewer-details">
+                                    <span class="reviewer-name">{{review.users.first_name}} {{review.users.last_name}}</span>
+                                    <span class="reviewer-location">{{review.users.location}}</span>
+                                    <div class="reviewer-feed">
+                                        <i class="fas fa-comments"></i>
+                                        <span class="reviewer-total">{{review.users.reviews| length}}</span>
+                                    </div>
+                                </div>
+                                <div class="reviewer-rating">
+                                    <div class="reviewer-stars">
+                                        {% for star in range(review.rating)%}
+                                            <i class="fa fa-star checked"></i>
+                                        {%endfor%}
+                                    </div>
+                                    <div class="created">
+                                        <span class="created-date">{{review.created}}</span>
+                                    </div>
+                                </div>
+                                <div class="reviewer-comment">
+                                    <span class="comment">"{{review.comment}}"</span>
+                                </div>
+                            </div>
+                        </div>
+                        {%if session['user_id'] == review.users.id%}
+                        <div class="edit-button">
+                            <li class="edit-btn">Edit Review</li>
+                        </div>
+                        <div class="edit-review">
+                            <form id="edit-form" method="GET" action="/">
+                                <div class="edit-ratings">
+                                    {% for checked in range(0, 5)%}
+                                        {%if loop.index <= review.rating%}
+                                        <i class="fas fa-star"></i>
+                                        {%else%}
+                                        <i class="far fa-star"></i>
+                                        {%endif%}
+                                    {%endfor%}
+                                </div>
+                                <textarea id="edit-restaurant-review" maxlength="180" class="form-control" rows="3" placeholder="Edit Your Review">{{review.comment}}</textarea>
+                                <p class="max-char">Max 180 Characters</p>
+                                <input class="review-btn add" type="submit" value="Edit">
+                            </form>
+                        </div>
+                        {%endif%}
+                    </div>
+                {%endfor%}
                 </div>
             </div>
-        </header>
-    </div>
-  </section>
+        </div>
+    </section>
+  </main>
 {%endblock%}

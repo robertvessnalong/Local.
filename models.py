@@ -1,5 +1,6 @@
 """ Models for Local. """
 
+from enum import unique
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 import math
@@ -14,6 +15,8 @@ bcrypt = Bcrypt()
 def connect_db(app):
     db.app = app
     db.init_app(app)
+
+
 
 
 class User(db.Model):
@@ -48,6 +51,7 @@ class User(db.Model):
             return False
         
     favorites = db.relationship('Favorite', backref="users")
+    reviews = db.relationship('Review', backref="users")
 
 
 class Rating(db.Model):
@@ -64,12 +68,12 @@ class Rating(db.Model):
         'number': 0,
         'isInt': False
     }
-        if rating.is_integer():
-            rating_data['number'] = int(rating)
+        if rating["rating"].is_integer():
+            rating_data['number'] = int(rating["rating"])
             rating_data['isInt'] = True
             return rating_data
         else:
-            rating_data['number'] = math.ceil(rating)
+            rating_data['number'] = math.ceil(rating['rating'])
             rating_data['isInt'] = False
             return rating_data
 
@@ -77,46 +81,40 @@ class Favorite(db.Model):
 
     __tablename__ = 'favorites'
 
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    restaurant_id = db.Column(db.Text, db.ForeignKey('restaurant.restaurant_id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    restaurant_id = db.Column(db.Text, nullable=False, primary_key=True)
+    name = db.Column(db.Text, nullable=False)
+    image_url = db.Column(db.Text)
+    category = db.Column(db.Text)
+
 
     def serialize(self):
         return {
             'user_id': self.user_id,
-            'restaurant_id': self.restaurant_id
+            'restaurant_id': self.restaurant_id,
+            'name': self.name,
+            'image_url': self.image_url,
+            'category': self.category
         }
         
+class Review(db.Model):
 
-class Restaurant(db.Model):
-
-    __tablename__ = 'restaurant'
-
-    restaurant_id = db.Column(db.Text, nullable=False, primary_key=True)
-    image_url = db.Column(db.Text, nullable=False)
-    name = db.Column(db.Text, nullable=False)
-    price_count = db.Column(db.Text)
-    categories = db.Column(db.Text)
-    total_reviews = db.Column(db.Integer)
-    modified_rating = db.Column(db.Integer)
-    isInt = db.Column(db.Boolean)
-
-
-
-
-class Comment(db.Model):
-
-    __tablename__ = 'comments'
+    __tablename__ = 'reviews'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True) 
+    created = db.Column(db.Date, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     restaurant_id = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String(180), nullable=False)
+
+    
 
 class LikeDislike(db.Model):
 
     __tablename__ = 'likeanddislike'
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'), primary_key=True)
+    comment_id = db.Column(db.Integer, db.ForeignKey('reviews.id'), primary_key=True)
     likeordislike = db.Column(db.Text)
 
 

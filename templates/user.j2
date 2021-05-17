@@ -1,13 +1,33 @@
 {% extends 'base.j2'%}
 {%block title%}{{user.first_name}} - Local.{%endblock%}
 {%block content%}
- <header class="primary-header">
-    <div class="container d-center">
+<header class="primary-header-inner">
+    <div class="container">
         <div class="brand">
             <a href="/">Local.</a>
         </div>
+        <div class="search-inner">
+            <form action="">
+                <input
+                class="search-input-inner"
+                type="text"
+                placeholder="Find Something Local"
+                />
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+        {%if session['user_id']%}
+        <div class="profile-btn">
+            <a href="/users/{{session['user_id']}}">Profile</a>
+        </div>
+        {%else%}
+        <div class="login-btn">
+            <a href="/login">Login</a>
+        </div>
+        {%endif%}
     </div>
 </header>
+
 <section class="top-shelf"> 
     <div class="container">
         <div class="top-shelf-content">
@@ -18,7 +38,7 @@
                 <h1>{{user.first_name}} {{user.last_name[0]}}.</h1>
                 <h3 class="user-location">From {{user.location}}</h3>
                 <ul class="user-stats">
-                    <li class="review-count">Reviews: 5</li>
+                    <li class="review-count">Reviews: {{user.reviews | length}}</li>
                     <li class="like-count">Likes: {{user.favorites | length}} </li>
                 </ul>
             </div>
@@ -33,29 +53,80 @@
 </section>
 <section class="review_favorites">
     <div class="container">
-        <div class="reviews">
-            <header class="content-header">
-                <h3>Your Recent Reviews</h3>
-            </header>
-            <div class="review-container">
-
+        <div class="user-reviews">
+            <div class="user-review-container">
+                <div class="ftco-section">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <h2 class="heading-section mb-5">Your Reviews</h2>
+                            </div>
+                            <div class="col-md-12">
+                               {% for review in user.reviews %}
+                                <div class="review-item">
+                                    <div class="review_user">
+                                        <div class="user_image">
+                                            <img class="reviewer-image" src="https://prospectdirect.com/wpstagemct/wp-content/uploads/2017/05/generic-profile-photo-3.jpg">
+                                        </div>
+                                        <div class="review-content">
+                                            <div class="reviewer-details">
+                                                <span class="reviewer-name">{{review.users.first_name}} {{review.users.last_name}}</span>
+                                                <span class="reviewer-location">{{review.users.location}}</span>
+                                                <div class="reviewer-feed">
+                                                    <i class="fas fa-comments"></i>
+                                                    <span class="reviewer-total">{{user.reviews | length}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="reviewer-rating">
+                                                <div class="reviewer-stars">
+                                                    {% for star in range(review.rating)%}
+                                                        <i class="fa fa-star checked"></i>
+                                                    {%endfor%}
+                                                </div>
+                                                <div class="created">
+                                                    <span class="created-date">{{review.created}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="reviewer-comment">
+                                                <span class="comment">"{{review.comment}}"</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {%endfor%}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="favorites">
-            <header class="content-header">
-                <h3>Your Favorites</h3>
-            </header>
             <div class="favorite-container">
-                {%for favorite in favorite%}
-                    <div class="card bg-dark text-white">
-                    <img class="card-img" src="{{favorite['image_url']}}" alt="Card image">
-                    <div class="card-img-overlay">
-                        <h5 class="card-title">{{favorite['name']}}</h5>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                        <p class="card-text">Last updated 3 mins ago</p>
+                <div class="ftco-section">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <h2 class="heading-section mb-5">Your Favorites</h2>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="user-carousel owl-carousel">
+                                    {% for fav in favorite%}
+                                        <div class="item">
+                                            <div class="work">
+                                                <div class="img d-flex align-items-end justify-content-center" style="background-image: url('{{fav.image_url}}');">
+                                                    <div class="text w-100">
+                                                        <span class="cat">{{fav['category']}}</span>
+                                                        <h3><a href="/restaurant/{{fav.restaurant_id}}">{{fav.name}}</a></h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    </div>
-                {%endfor%}
+                </div>
             </div>
         </div>
     </div>
