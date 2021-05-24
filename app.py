@@ -1,5 +1,6 @@
 
 import re
+import sqlalchemy
 from flask import Flask, render_template, redirect, flash, session, jsonify, request
 from flask.helpers import url_for
 from models import db, connect_db, User, Rating, Favorite, Review, LikeDislike, get_store_hours
@@ -10,7 +11,7 @@ import requests
 import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql:///local')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql:///local').replace("://", "ql://", 1)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'helloworld')
 geo_lookup = GeoLookup(os.environ.get('IPSTACK_API_KEY'))
