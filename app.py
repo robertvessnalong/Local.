@@ -95,7 +95,7 @@ def login():
 def user_page(user_id):
     if "user_id" not in session:
         return redirect('/login')
-    user = User.query.ge(user_id)
+    user = User.query.get(user_id)
     if user:
         user_favorited = [favorited for favorited in user.favorites]
         if user.id == session['user_id']:
