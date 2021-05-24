@@ -8,11 +8,12 @@ from ipstack import GeoLookup
 from config import yelp_api_key, ipstack_key
 import json
 import requests
+import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///local'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config['SECRET_KEY'] = 'helloworld'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'helloworld')
 geo_lookup = GeoLookup(ipstack_key)
 location_data = geo_lookup.get_own_location()
 
@@ -94,7 +95,7 @@ def login():
 def user_page(user_id):
     if "user_id" not in session:
         return redirect('/login')
-    user = User.query.get(user_id)
+    user = User.query.ge(user_id)
     if user:
         user_favorited = [favorited for favorited in user.favorites]
         if user.id == session['user_id']:
