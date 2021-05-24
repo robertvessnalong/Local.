@@ -549,3 +549,29 @@ footer {
   padding: 5px;
   display: none;
 }
+
+.mg-r {
+  margin-right: 3.7px;
+}
+
+.favorite-review-btn {
+  margin-left: auto;
+  align-self: center;
+  font-size: 25px;
+}
+
+.fav-review i {
+  cursor: pointer;
+}
+
+.owl-carousel {
+  z-index: 0 !important;
+}
+
+.card img {
+  height: 200px;
+}
+
+.card {
+  min-height: 412px;
+}

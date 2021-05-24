@@ -1,34 +1,7 @@
 {% extends 'base.j2'%}
 {%block title%}{{rest.name}} - Local.{%endblock%}
 {%block content%}
-
-<header class="primary-header-inner">
-    <div class="container">
-        <div class="brand">
-            <a href="/">Local.</a>
-        </div>
-        <div class="search-inner">
-            <form action="">
-                <input
-                class="search-input-inner"
-                type="text"
-                placeholder="Find Something Local"
-                />
-                <button type="submit"><i class="fas fa-search"></i></button>
-            </form>
-        </div>
-         {%if session['user_id']%}
-        <div class="profile-btn">
-            <a href="/users/{{session['user_id']}}">Profile</a>
-        </div>
-        {%else%}
-        <div class="login-btn">
-            <a href="/login">Login</a>
-            <i class="fas fa-sign-in-alt"></i>
-        </div>
-        {%endif%}
-    </div>
-</header>
+{%include 'header.j2'%}
 
 <section class="hero-section-inner">
     <div class="hero-content-inner">
@@ -131,7 +104,7 @@
             </header>
             <div class="review-comment">
                 <h5>Review {{rest.name}}</h5>
-                <form id="review-form" method="GET" action="/">
+                <form id="review-form">
                     <div class="star-ratings">
                         {% for checked in range(0, 5)%}
                             <i class="far fa-star"></i>
@@ -149,7 +122,7 @@
             <div class="row">
                 <div id="review-items"class="col-lg-8">
                 {% for review in reviews %}
-                     <div data-id="{{review.id}}" class="review-item">
+                    <div data-id="{{review.id}}" class="review-item">
                         <div class="review_user">
                             <div class="user_image">
                                 <img class="reviewer-image" src="https://prospectdirect.com/wpstagemct/wp-content/uploads/2017/05/generic-profile-photo-3.jpg">
@@ -160,7 +133,7 @@
                                     <span class="reviewer-location">{{review.users.location}}</span>
                                     <div class="reviewer-feed">
                                         <i class="fas fa-comments"></i>
-                                        <span class="reviewer-total">{{review.users.reviews| length}}</span>
+                                        <span class="reviewer-total">{{review.users.reviewed| length}}</span>
                                     </div>
                                 </div>
                                 <div class="reviewer-rating">
@@ -176,6 +149,15 @@
                                 <div class="reviewer-comment">
                                     <span class="comment">"{{review.comment}}"</span>
                                 </div>
+                                 {% if review.user_id != session['user_id'] %}
+                                 <div class="favorite-review-btn">
+                                    {%if review.id in liked%}          
+                                    <li data-id="{{review.id}}" class="fav-review"><i class="fas fa-heart"></i></li>
+                                    {%else%}
+                                    <li data-id="{{review.id}}" class="fav-review"><i class="far fa-heart"></i></li>
+                                    {%endif%}
+                                </div>
+                            {% endif %}
                             </div>
                         </div>
                         {%if session['user_id'] == review.users.id%}
@@ -185,7 +167,6 @@
                             </div>
                             <div class="delete-button">
                                 <li class="delete-btn">Delete<i class="fas fa-trash"></i></li>
-                                
                             </div>
                         </div>
                         <div class="edit-review">

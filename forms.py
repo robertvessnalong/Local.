@@ -27,3 +27,9 @@ class ReviewForm(FlaskForm):
     rating = IntegerField('Rating', validators=[InputRequired(), NumberRange(min=0, max=5)])
     review = StringField('Review', validators=[InputRequired(), Length(max=180)])
     restaurant_id = StringField('Restaurant ID', validators=[InputRequired()])
+
+class EditReview(FlaskForm):
+    class Meta:
+        csrf = False
+        rating = IntegerField('Rating', validators=[InputRequired(), NumberRange(min=0, max=5)])
+        review = StringField('Review', validators=[InputRequired(), Length(max=180)])

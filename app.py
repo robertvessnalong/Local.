@@ -3,7 +3,7 @@ import re
 from flask import Flask, render_template, redirect, flash, session, jsonify, request
 from flask.helpers import url_for
 from models import db, connect_db, User, Rating, Favorite, Review, LikeDislike, get_store_hours
-from forms import RegisterForm, LoginForm, UpdateUser, ReviewForm
+from forms import RegisterForm, LoginForm, UpdateUser, ReviewForm, EditReview
 from ipstack import GeoLookup
 from config import yelp_api_key, ipstack_key
 import json
@@ -33,14 +33,24 @@ def get_single_restaurant(rest_id):
 
 @app.route('/')
 def homepage():
-        new_restaurants = {'categories': 'restaurants',
-                           'latitude': location_data['latitude'], 
-                           'longitude': location_data['longitude'], 
-                           'attributes': 'hot_and_new',
-                           'limit': 10}
-        restaurant_request =requests.get(url_search, params=new_restaurants, headers=headers)
-        data = restaurant_request.json()
-        return render_template('homepage.j2', rest=data['businesses'])
+        if 'user_id' in session:
+            user = User.query.get(session['user_id'])
+            new_restaurants = {'categories': 'restaurants',
+                            'location': user.location,
+                            'attributes': 'hot_and_new',
+                            'limit': 10}
+            restaurant_request =requests.get(url_search, params=new_restaurants, headers=headers)
+            data = restaurant_request.json()
+            return render_template('homepage.j2', rest=data['businesses'])
+        else:
+            new_restaurants = {'categories': 'restaurants',
+                            'latitude': location_data['latitude'], 
+                            'longitude': location_data['longitude'], 
+                            'attributes': 'hot_and_new',
+                            'limit': 10}
+            restaurant_request =requests.get(url_search, params=new_restaurants, headers=headers)
+            data = restaurant_request.json()
+            return render_template('homepage.j2', rest=data['businesses'])
         
     
 
@@ -73,6 +83,7 @@ def login():
         password = form.password.data
         user = User.authenticate(email, password)
         if user:
+            print(user.id)
             session['user_id'] = user.id
             return redirect('/')
         else:
@@ -82,13 +93,16 @@ def login():
 @app.route('/users/<user_id>')
 def user_page(user_id):
     if "user_id" not in session:
-        return redirect('/')
-    user = User.query.get_or_404(user_id)
-    user_favorited = [favorited for favorited in user.favorites]
-    if user.id == session['user_id']:
-        return render_template('user.j2', user=user, favorite=user_favorited)
+        return redirect('/login')
+    user = User.query.get(user_id)
+    if user:
+        user_favorited = [favorited for favorited in user.favorites]
+        if user.id == session['user_id']:
+            return render_template('user.j2', user=user, favorite=user_favorited)
+        else:
+            return redirect('/login')
     else:
-        return redirect('/')
+        return redirect('/login')
     
 
 @app.route('/logout')
@@ -124,12 +138,11 @@ def restaurant_page(rest_id):
     time = get_store_hours(restaurant)
     rating = Rating.convert_restaurant_rating(restaurant)
     reviews = Review.query.filter(Review.restaurant_id == restaurant['id']).order_by(Review.id.desc()).all()
-    for review in reviews:
-        print(review.created)
     if 'user_id' in session:
         user = User.query.get_or_404(session['user_id'])
+        liked = [usr.comment_id for usr in user.liked]
         favorite = [favorite.restaurant_id for favorite in user.favorites if favorite.restaurant_id == rest_id]
-        return render_template('restaurant_page.j2', rest=restaurant, rating=rating, time=time, favorite=favorite, user=user, reviews=reviews)
+        return render_template('restaurant_page.j2', rest=restaurant, rating=rating, time=time, favorite=favorite, reviews=reviews, liked=liked)
     else:
         return render_template('restaurant_page.j2', rest=restaurant, rating=rating, time=time, reviews=reviews)
 
@@ -177,14 +190,15 @@ def write_review():
                             created=json['created_at'])
         db.session.add(new_review)
         db.session.commit()
-        print(new_review.user)
+        print(new_review)
         success = {'success': 'Your Review is Posted',
                    'created_at':json['created_at'],
+                   'review_id': new_review.id,
                    'user': {
                    'first_name': user.first_name,
                    'last_name': user.last_name,
                    'location': user.location,
-                   'reviews': len(user.reviews)}}
+                   'reviews': len(user.reviewed)}}
         return jsonify(success)
     else:
         return jsonify(errors=form.errors)
@@ -197,11 +211,70 @@ def update_review(review_id):
         return url_for('login')
     review = Review.query.get_or_404(review_id)
     json = request.get_json()
+    form = EditReview(data=json)
+    if form.validate_on_submit():
+        review.rating = json['rating']
+        review.comment = json['review']
+        review.created = json['created_at']
+        db.session.commit()
+        return json
     print(json)
-    return url_for('login')
 
 
 @app.route('/review/<review_id>', methods=['DELETE'])
 def delete_review(review_id):
     if "user_id" not in session:
         return url_for('login')
+    review = Review.query.get_or_404(review_id)
+    if session['user_id'] == review.user_id:
+        db.session.delete(review)
+        db.session.commit()
+    success = {'success': 'Message Deleted'}
+    return jsonify(success)
+
+
+
+@app.route('/favorite/review/<review_id>', methods=['POST'])
+def favorite_comment(review_id):
+    if "user_id" not in session:
+        return url_for('login')
+    review = Review.query.get_or_404(review_id)
+    if review:
+        new_like = LikeDislike(user_id=session['user_id'],
+                               comment_id=review_id)
+        db.session.add(new_like)
+        db.session.commit()
+        return {'success': 'Favorited Review'}
+    return redirect('/')
+
+
+@app.route('/favorite/review/<review_id>', methods=['DELETE'])
+def remove_favorite_review(review_id):
+    if "user_id" not in session:
+        return url_for('login')
+    review = Review.query.get_or_404(review_id)
+    if review:
+        like = LikeDislike.query.filter(LikeDislike.comment_id == review.id).first()
+        db.session.delete(like)
+        db.session.commit()
+    return {'success': 'unfavorited Review'}
+
+
+@app.route('/search', methods=["GET", "POST"])
+def render_Search():
+    if request.method == "POST":
+        form_data = request.form['search']
+        if form_data != "":
+            restaurant_search = {'categories': 'restaurants', 
+                                'term': form_data or "",
+                                'latitude': location_data['latitude'], 
+                                'longitude': location_data['longitude'],  }
+        else:
+            restaurant_search = {'categories': 'restaurants', 
+                                'latitude': location_data['latitude'], 
+                                'longitude': location_data['longitude'],  }
+        restaurant_request =requests.get(url_search, params=restaurant_search, headers=headers)
+        data = restaurant_request.json()
+        return render_template('search.j2', rest=data['businesses'])
+    else:
+        return render_template('search.j2')

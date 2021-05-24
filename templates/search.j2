@@ -1,0 +1,32 @@
+{% extends 'base.j2'%}
+{%block title%}Search Results{%endblock%}
+{%block content%}
+{%include 'header.j2'%}
+<main class="main-content-inner">
+    <section class="search-items">
+        <div class="container mx-auto mb-5">
+            <div class="row">
+                {% for rst in rest %}
+                     <div class="col-md-4 mt-5">
+                        <div class="card" style="width: 18rem;">
+                            <img src="{{rst.image_url}}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">{{rst.name}}</h5>
+                                    {% if rst.categories %}
+                                    <h6 class="card-subtitle mb-2 text-muted">{{rst.categories[0].title}}</h6>
+                                    {% endif %}
+                                <p class="card-text">
+                                {% for items in rst.location.display_address %}
+                                {{items}}<br>
+                                {%endfor%}
+                                </p>
+                                <a href="/restaurant/{{rst.id}}" class="btn  mr-2"><i class="fas fa-link"></i> See Details</a>
+                            </div>
+                        </div>
+                    </div>    
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+{%endblock%}

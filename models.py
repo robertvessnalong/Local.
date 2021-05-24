@@ -51,7 +51,8 @@ class User(db.Model):
             return False
         
     favorites = db.relationship('Favorite', backref="users")
-    reviews = db.relationship('Review', backref="users")
+    reviewed = db.relationship('Review', backref="users")
+    liked = db.relationship('LikeDislike', backref="users")
 
 
 class Rating(db.Model):
@@ -107,7 +108,6 @@ class Review(db.Model):
     rating = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String(180), nullable=False)
 
-    
 
 class LikeDislike(db.Model):
 
@@ -115,8 +115,8 @@ class LikeDislike(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     comment_id = db.Column(db.Integer, db.ForeignKey('reviews.id'), primary_key=True)
-    likeordislike = db.Column(db.Text)
 
+    
 
 
 def get_store_hours(store_hours):

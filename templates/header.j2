@@ -1,0 +1,27 @@
+<header class="primary-header-inner">
+    <div class="container">
+        <div class="brand">
+            <a href="/">Local.</a>
+        </div>
+        <div class="search-inner">
+            <form id="rest-search" action="/search" method="POST">
+                <input
+                class="search-input-inner"
+                name="search"
+                type="text"
+                placeholder="Find Something Local"
+                />
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+        {%if session['user_id']%}
+        <div class="profile-btn">
+            <a href="/users/{{session['user_id']}}">Profile</a>
+        </div>
+        {%else%}
+        <div class="login-btn">
+            <a href="/login">Login</a>
+        </div>
+        {%endif%}
+    </div>
+</header>

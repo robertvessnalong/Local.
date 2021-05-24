@@ -1,32 +1,7 @@
 {% extends 'base.j2'%}
 {%block title%}{{user.first_name}} - Local.{%endblock%}
 {%block content%}
-<header class="primary-header-inner">
-    <div class="container">
-        <div class="brand">
-            <a href="/">Local.</a>
-        </div>
-        <div class="search-inner">
-            <form action="">
-                <input
-                class="search-input-inner"
-                type="text"
-                placeholder="Find Something Local"
-                />
-                <button type="submit"><i class="fas fa-search"></i></button>
-            </form>
-        </div>
-        {%if session['user_id']%}
-        <div class="profile-btn">
-            <a href="/users/{{session['user_id']}}">Profile</a>
-        </div>
-        {%else%}
-        <div class="login-btn">
-            <a href="/login">Login</a>
-        </div>
-        {%endif%}
-    </div>
-</header>
+{%include 'header.j2'%}
 
 <section class="top-shelf"> 
     <div class="container">
@@ -38,13 +13,12 @@
                 <h1>{{user.first_name}} {{user.last_name[0]}}.</h1>
                 <h3 class="user-location">From {{user.location}}</h3>
                 <ul class="user-stats">
-                    <li class="review-count">Reviews: {{user.reviews | length}}</li>
+                    <li class="review-count">Reviews: {{user.reviewed | length}}</li>
                     <li class="like-count">Likes: {{user.favorites | length}} </li>
                 </ul>
             </div>
             <div class="user-profile-action">
                 <ul>
-                    <li><a href="/users/add_photo">Add Profile Picture</a></li>
                     <li><a href="/users/{{user.id}}/update">Update Your Profile</a></li>
                 </ul>
             </div>
@@ -62,7 +36,7 @@
                                 <h2 class="heading-section mb-5">Your Reviews</h2>
                             </div>
                             <div class="col-md-12">
-                               {% for review in user.reviews %}
+                               {% for review in user.reviewed %}
                                 <div class="review-item">
                                     <div class="review_user">
                                         <div class="user_image">
@@ -74,7 +48,7 @@
                                                 <span class="reviewer-location">{{review.users.location}}</span>
                                                 <div class="reviewer-feed">
                                                     <i class="fas fa-comments"></i>
-                                                    <span class="reviewer-total">{{user.reviews | length}}</span>
+                                                    <span class="reviewer-total">{{user.reviewed | length}}</span>
                                                 </div>
                                             </div>
                                             <div class="reviewer-rating">
