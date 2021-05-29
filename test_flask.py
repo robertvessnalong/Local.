@@ -70,4 +70,16 @@ class UserTest(TestCase):
             res = client.get('/logout', follow_redirects=True)
             html = res.get_data(as_text=True)
             assert session.get('user_id')
-   
+
+    def test_register(self):
+        with app.test_client() as client:
+            new_user = {
+                'first_name': 'Al',
+                'last_name': 'Simmons',
+                'location': 'Wisconsin',
+                'email': 'al@gmail.com',
+                'password': 'password'
+            }
+            res = client.post('/register', new_user, follow_redirects=True)
+            html = res.get_data(as_text=True)
+            print(html)

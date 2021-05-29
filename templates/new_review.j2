@@ -1,0 +1,65 @@
+    <div data-id="{{review.id}}" class="review-item">
+        <div class="review_user">
+            <div class="user_image">
+                <img class="reviewer-image" src="https://prospectdirect.com/wpstagemct/wp-content/uploads/2017/05/generic-profile-photo-3.jpg">
+            </div>
+            <div class="review-content">
+                <div class="reviewer-details">
+                    <span class="reviewer-name">{{review.users.first_name}} {{review.users.last_name}}</span>
+                    <span class="reviewer-location">{{review.users.location}}</span>
+                    <div class="reviewer-feed">
+                        <i class="fas fa-comments"></i>
+                        <span class="reviewer-total">{{review.users.reviewed| length}}</span>
+                    </div>
+                </div>
+                <div class="reviewer-rating">
+                    <div class="reviewer-stars">
+                        {% for star in range(review.rating)%}
+                            <i class="fa fa-star checked"></i>
+                        {%endfor%}
+                    </div>
+                    <div class="created">
+                        <span class="created-date">{{review.created}}</span>
+                    </div>
+                </div>
+                <div class="reviewer-comment">
+                    <span class="comment">"{{review.comment}}"</span>
+                </div>
+                    {% if review.user_id != session['user_id'] %}
+                    <div class="favorite-review-btn">
+                    {%if review.id in liked%}          
+                    <li data-id="{{review.id}}" class="fav-review"><i class="fas fa-heart"></i></li>
+                    {%else%}
+                    <li data-id="{{review.id}}" class="fav-review"><i class="far fa-heart"></i></li>
+                    {%endif%}
+                </div>
+            {% endif %}
+            </div>
+        </div>
+        {%if session['user_id'] == review.users.id%}
+        <div class="review-buttons">
+            <div class="edit-button">
+                <li class="edit-btn">Edit Review</li>
+            </div>
+            <div class="delete-button">
+                <li class="delete-btn">Delete<i class="fas fa-trash"></i></li>
+            </div>
+        </div>
+        <div class="edit-review">
+            <form id="edit-form" method="GET" action="/">
+                <div class="edit-ratings">
+                    {% for checked in range(0, 5)%}
+                        {%if loop.index <= review.rating%}
+                        <i class="fas fa-star"></i>
+                        {%else%}
+                        <i class="far fa-star"></i>
+                        {%endif%}
+                    {%endfor%}
+                </div>
+                <textarea id="edit-restaurant-review" maxlength="180" class="form-control" rows="3" placeholder="Edit Your Review">{{review.comment}}</textarea>
+                <p class="max-char">Max 180 Characters</p>
+                <input class="review-btn add" type="submit" value="Edit">
+            </form>
+        </div>
+        {%endif%}
+    </div>

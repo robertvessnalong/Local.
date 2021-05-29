@@ -301,6 +301,8 @@ footer {
 
 .rating {
   margin-bottom: 6px;
+  display: flex;
+  align-items: center;
 }
 
 .fa-star,
@@ -574,4 +576,90 @@ footer {
 
 .card {
   min-height: 412px;
+}
+
+.yelp-logo {
+  width: 80px;
+  margin-top: -6px;
+}
+
+@media only screen and (max-width: 680px) {
+  .search-inner {
+    width: 65%;
+  }
+
+  .rest-info h1 {
+    font-size: 32px;
+  }
+
+  .rating {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero-content-info .container {
+    padding: 0;
+  }
+
+  .price_claimed_type {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .category {
+    margin-left: 0;
+  }
+
+  .single {
+    margin-left: 0;
+  }
+
+  .review-btn span,
+  .favorite-btn span {
+    display: none;
+  }
+
+  .action-buttons {
+    justify-content: center;
+  }
+
+  .review_user {
+    flex-direction: column;
+  }
+
+  #review-items {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .review-content {
+    flex-direction: column;
+  }
+
+  .reviewer-comment {
+    padding: 0;
+  }
+
+  .search form {
+    width: auto;
+  }
+
+  .top-shelf-content {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .user-image {
+    border-radius: 50%;
+    height: 160px;
+    width: 160px;
+    margin-top: 15px;
+  }
+}
+
+@media only screen and (max-width: 975px) {
+  .mySwiper .swiper-wrapper .swiper-slide img {
+    width: auto;
+  }
 }

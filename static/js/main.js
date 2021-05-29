@@ -70,7 +70,16 @@ let swiper = new Swiper('.mySwiper', {
 });
 
 let swiperRestPage = new Swiper('.mySwiper-Rest-Page', {
-  slidesPerView: 3,
+  slidesPerView: 1,
+  autoplay: {
+    delay: 5000,
+    disableOnInteraction: false,
+  },
+  breakpoints: {
+    640: {
+      slidesPerView: 3,
+    },
+  },
 });
 
 async function handleFavorite() {
@@ -98,15 +107,21 @@ async function handleFavorite() {
 async function handleFavoriteReview(event) {
   const id = $(event.target).parent().data('id');
   if (event.target.className === 'far fa-heart') {
-    await axios.post(`/favorite/review/${id}`).then(function (response) {
-      console.log(response);
+    await axios.post(`/favorite/review/${id}`).then(function (res) {
+      if (res.data == '/login') {
+        window.location = res.data;
+      } else {
+        $(event.target).attr('class', 'fas fa-heart');
+      }
     });
-    $(event.target).attr('class', 'fas fa-heart');
   } else if (event.target.className === 'fas fa-heart') {
-    await axios.delete(`/favorite/review/${id}`).then(function (response) {
-      console.log(response);
+    await axios.delete(`/favorite/review/${id}`).then(function (res) {
+      if (res.data == '/login') {
+        window.location = res.data;
+      } else {
+        $(event.target).attr('class', 'far fa-heart');
+      }
     });
-    $(event.target).attr('class', 'far fa-heart');
   }
 }
 
@@ -168,6 +183,7 @@ function handleEditStars(event) {
 async function handleReview(event) {
   event.preventDefault();
   currentStar = rating;
+  const $reviewContainer = $('#review-items');
   let review = $('#restaurant-review').val();
   let today = new Date()
     .toISOString()
@@ -185,8 +201,8 @@ async function handleReview(event) {
     .then((res) => {
       if (res.data == '/login') {
         window.location = res.data;
-      } else if (res.data.success) {
-        generateReview(res.data, generateStars(currentStar), review_data);
+      } else {
+        $($reviewContainer).prepend(res.data);
       }
     })
     .catch((res) => {
@@ -197,7 +213,7 @@ async function handleReview(event) {
   rating = 0;
   $('#restaurant-review').val('');
   $('.star-ratings i').each(() => {
-    $('.star-ratingsi').attr('class', 'far fa-star');
+    $('.star-ratings i').attr('class', 'far fa-star');
   });
 }
 
@@ -255,85 +271,19 @@ async function deleteReview(event) {
   if (event.target.className === 'delete-btn') {
     const reviewID = $(event.target).closest('.review-item').data('id');
     const reviewContainer = $(event.target).closest('.review-item');
-    await axios.delete(`/review/${reviewID}`).catch((res) => {
-      if (res.data == '/login') {
-        window.location = res.data;
-      } else {
-        $(reviewContainer).remove();
-      }
-    });
+    await axios
+      .delete(`/review/${reviewID}`)
+      .then((res) => {
+        if (res.data == '/login') {
+          window.location = res.data;
+        } else {
+          $(reviewContainer).remove();
+        }
+      })
+      .catch((res) => {
+        console.log(res);
+      });
   }
-}
-
-function generateReview(data, generateStars, review_data) {
-  const $reviewContainer = $('#review-items');
-  let new_review = `
-    <div data-id="${data.review_id}" class="review-item">
-      <div class="review_user">
-          <div class="user_image">
-              <img class="reviewer-image" src="https://prospectdirect.com/wpstagemct/wp-content/uploads/2017/05/generic-profile-photo-3.jpg">
-          </div>
-          <div class="review-content">
-            <div class="reviewer-details">
-                <span class="reviewer-name">${data.user.first_name} ${
-    data.user.last_name
-  }</span>
-                <span class="reviewer-location">${data.user.location}</span>
-                <div class="reviewer-feed">
-                    <i class="fas fa-comments"></i>
-                    <span class="reviewer-total">${data.user.reviews}</span>
-                </div>
-            </div>
-            <div class="reviewer-rating">
-                <div class="reviewer-stars">
-                    ${generateStars}
-                </div>
-                <div class="created">
-                    <span class="created-date">${data.created_at}</span>
-                </div>
-            </div>
-            <div class="reviewer-comment">
-                <span class="comment">"${review_data.review}"</span>
-            </div>
-        </div>
-      </div>
-      <div class="review-buttons">
-      <div class="edit-button">
-          <li class="edit-btn">Edit Review</li>
-      </div>
-      <div class="delete-button">
-          <li class="delete-btn">Delete<i class="fas fa-trash"></i></li>
-      </div>
-    </div>
-    <div class="edit-review">
-      <form id="edit-form" method="GET" action="/">
-          <div class="edit-ratings">
-              ${generateEditStars(review_data.rating)}
-          </div>
-          <textarea id="edit-restaurant-review" maxlength="180" class="form-control" rows="3" placeholder="Edit Your Review">${
-            review_data.review
-          }</textarea>
-          <p class="max-char">Max 180 Characters</p>
-          <input class="review-btn add" type="submit" value="Edit">
-      </form>
-    </div>
-  </div>
- 
-  `;
-
-  $($reviewContainer).prepend(new_review);
-}
-
-function generateEditStars(rating) {
-  stars = '';
-  for (let i = 0; i < 5; i++) {
-    if (i <= rating - 1) {
-      stars += "<i class='fas fa-star'></i>";
-    } else {
-      stars += "<i class='far fa-star'></i>";
-    }
-  }
-  return stars;
 }
 
 function generateStars(currentStar) {

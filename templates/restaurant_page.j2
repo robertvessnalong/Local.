@@ -16,20 +16,9 @@
             <div class="rest-info">
                 <h1>{{rest.name}}</h1>
                     <div class="rating">
-                        {% if rating.isInt == True %}
-                            {% for checked in range(rating.number)%}
-                            <i class="fa fa-star checked"></i>
-                            {%endfor%}
-                        {%elif rating.isInt == False %}
-                            {% for checked in range(rating.number)%}
-                                {% if loop.last %}
-                                    <i class="fas fa-star-half"></i>
-                                {%else%}
-                                    <i class="fa fa-star checked"></i>
-                                {%endif%}
-                            {%endfor%}
-                        {%endif%}
+                       <img src="/static/images/{{rating.image}}">
                        <span class="total-reviews">{{rest.review_count}} Reviews</span>
+                       <a href="{{rest.url}} target="_blank"><img class="yelp-logo" src="/static/images/Logo_RGB.png"></a>
                     </div>
                     <div class="price_claimed_type">
                         <div class="claimed">
@@ -87,17 +76,17 @@
             <header class="header-buttons">
                 <div class="action-buttons">
                     <div class="review-container">
-                        <li href="/review" class="review-btn">Write A Review</li>
+                        <li href="/review" class="review-btn"><span>Write A</span> Review</li>
                     </div>
                     <div class="favorite">
                     {% if session['user_id'] %}
                     {% if favorite[0] == rest.id %}
-                            <li data-id={{rest.id}} class="favorite-btn"><i class="fas fa-heart"></i> Favorite</li>
+                            <li data-id={{rest.id}} class="favorite-btn"><i class="fas fa-heart"></i><span> Favorite</span></li>
                     {%else %}
-                            <li data-id="{{rest.id}}" class="favorite-btn"><i class="far fa-heart"></i>  Favorite</li>
+                            <li data-id="{{rest.id}}" class="favorite-btn"><i class="far fa-heart"></i><span>  Favorite</span></li>
                     {%endif%}
                     {%else%}
-                            <li data-id={{rest.id}} class="favorite-btn"><i class="far fa-heart"></i> Favorite</li>
+                            <li data-id={{rest.id}} class="favorite-btn"><i class="far fa-heart"></i><span> Favorite</span></li>
                     {%endif %}
                     </div>
                 </div>

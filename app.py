@@ -6,21 +6,22 @@ from flask.helpers import url_for
 from models import db, connect_db, User, Rating, Favorite, Review, LikeDislike, get_store_hours
 from forms import RegisterForm, LoginForm, UpdateUser, ReviewForm, EditReview
 from ipstack import GeoLookup
+from config import yelp_api_key, ipstack_key
 import json
 import requests
 import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql:///local').replace("://", "ql://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql:///local')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'helloworld')
-geo_lookup = GeoLookup(os.environ.get('IPSTACK_API_KEY'))
+geo_lookup = GeoLookup(os.environ.get('IPSTACK_API_KEY', ipstack_key))
 location_data = geo_lookup.get_own_location()
 
 connect_db(app)
 db.create_all()
 
-headers = {'Authorization': 'Bearer %s' % os.environ.get('YELP_API_KEY')}
+headers = {'Authorization': 'Bearer %s' % os.environ.get('YELP_API_KEY', yelp_api_key)}
 url_search = "https://api.yelp.com/v3/businesses/search"
 url_single = "https://api.yelp.com/v3/businesses/"
 
@@ -182,7 +183,6 @@ def write_review():
         return url_for('login')
     json = request.get_json()
     form = ReviewForm(data=json)
-    user = User.query.get_or_404(session['user_id'])
     if form.validate_on_submit():
         new_review = Review(user_id=session['user_id'],
                             restaurant_id = json['restaurant_id'],
@@ -191,16 +191,7 @@ def write_review():
                             created=json['created_at'])
         db.session.add(new_review)
         db.session.commit()
-        print(new_review)
-        success = {'success': 'Your Review is Posted',
-                   'created_at':json['created_at'],
-                   'review_id': new_review.id,
-                   'user': {
-                   'first_name': user.first_name,
-                   'last_name': user.last_name,
-                   'location': user.location,
-                   'reviews': len(user.reviewed)}}
-        return jsonify(success)
+        return jsonify(render_template('new_review.j2', review=new_review))
     else:
         return jsonify(errors=form.errors)
 
@@ -219,7 +210,6 @@ def update_review(review_id):
         review.created = json['created_at']
         db.session.commit()
         return json
-    print(json)
 
 
 @app.route('/review/<review_id>', methods=['DELETE'])

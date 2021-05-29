@@ -6,6 +6,7 @@ from flask_bcrypt import Bcrypt
 import math
 from datetime import date, datetime
 import calendar
+import os 
 
 from sqlalchemy.orm import backref
 
@@ -67,15 +68,18 @@ class Rating(db.Model):
     def convert_restaurant_rating(cls, rating):
         rating_data = {
         'number': 0,
-        'isInt': False
+        'isInt': False,
+        'image': ''
     }
         if rating["rating"].is_integer():
             rating_data['number'] = int(rating["rating"])
             rating_data['isInt'] = True
+            rating_data['image'] = f'small_{int(rating["rating"])}@2x.png'
             return rating_data
         else:
             rating_data['number'] = math.ceil(rating['rating'])
             rating_data['isInt'] = False
+            rating_data['image'] = f'small_{int(rating["rating"])}_half@2x.png'
             return rating_data
 
 class Favorite(db.Model):
@@ -137,3 +141,14 @@ def get_store_hours(store_hours):
                 return data
    
             
+# def get_rating_image(rating_data):
+#     data = {
+#         'image': ''
+#     }
+#         if rating_data['isInt'] == True:
+#             if f'{rating_data["number"]}@' in filename:
+#                 data['image'] = filename
+#                 print(data)
+#         else:
+#            print('Hello World')
+#     return rating_data
