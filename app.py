@@ -11,7 +11,7 @@ import requests
 import os
 
 app = Flask(__name__)
-uri = os.getenv("DATABASE_URL")  # or other relevant config var
+uri = os.getenv("DATABASE_URL")
 if uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(uri,'postgresql:///local')
