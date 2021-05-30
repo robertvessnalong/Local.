@@ -1,52 +1,27 @@
 # Local.
 
-### A web application that allow users to explore their neighborhood for local restaurants. Built using Python, and Yelp API.
+### A web application that allows users to find local restaurants, review restaurants, and favorite restaurant and reviews. Built using Python, Flask, JavaScript. Restaurant Data obtained from the Yelp API.
 
+Note: This project is currently being constantly edited and considered not a final project.
 
- API = https://www.yelp.com/developers
+#### App Features Include:
 
-# Database Schema
+- User can create an account and have the ability to review restaurants and favorite restaurants they would like to visit. The user has the ability to also search restaurant based on keywords.
 
-# User Model
+- Others users are able to like your reviews if they find them useful.
 
-### id = PK
+#### Original Site:
 
-### first_name = Required
+![Image of the Original Site](img/first-project.png 'Original Site')
 
-### last_name = Required
+#### Resources Used:
 
-### location
+- Yelp API: [https://www.yelp.com/developers]
 
-### email = Required
+#### Technology Used:
 
-### password = Required
-
-# Rating Model
-
-### user_id = FK
-
-### restaurant_id
-
-### rating
-
-# Favorites Model
-
-### user_id = FK
-
-### restaurant_id
-
-# Comment Model
-
-### user_id = FK
-
-### restaurant_id
-
-### comment
-
-# Like & Dislike Model
-
-### user_id = FK
-
-### comment_id = FK
-
-### Like or Dislike
+- Python
+- Flask
+- JavaScript
+- Bootstrap
+- IPStack
