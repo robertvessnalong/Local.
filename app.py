@@ -6,7 +6,6 @@ from flask.helpers import url_for
 from models import db, connect_db, User, Rating, Favorite, Review, LikeDislike, get_store_hours
 from forms import RegisterForm, LoginForm, UpdateUser, ReviewForm, EditReview
 from ipstack import GeoLookup
-from config import yelp_api_key, ipstack_key
 import json
 import requests
 import os
@@ -15,13 +14,13 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql:///local')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'helloworld')
-geo_lookup = GeoLookup(os.environ.get('IPSTACK_API_KEY', ipstack_key))
+geo_lookup = GeoLookup(os.environ.get('IPSTACK_API_KEY'))
 location_data = geo_lookup.get_own_location()
 
 connect_db(app)
 db.create_all()
 
-headers = {'Authorization': 'Bearer %s' % os.environ.get('YELP_API_KEY', yelp_api_key)}
+headers = {'Authorization': 'Bearer %s' % os.environ.get('YELP_API_KEY')}
 url_search = "https://api.yelp.com/v3/businesses/search"
 url_single = "https://api.yelp.com/v3/businesses/"
 
@@ -73,7 +72,7 @@ def register():
         db.session.add(register_user)
         db.session.commit()
         session['user_id'] = register_user.id
-        return redirect('/')
+        return redirect(f'/users/{register_user.id}')
     return render_template('register.j2', form=form)
 
 
