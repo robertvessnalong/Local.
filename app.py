@@ -12,7 +12,7 @@ import os
 
 app = Flask(__name__)
 url = os.environ.get('DATABASE_URL').replace("://", "ql://", 1)
-app.config['SQLALCHEMY_DATABASE_URI'] = (url, 'postgresql:///local')
+app.config['SQLALCHEMY_DATABASE_URI'] = (url)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'helloworld')
 geo_lookup = GeoLookup(os.environ.get('IPSTACK_API_KEY'))
