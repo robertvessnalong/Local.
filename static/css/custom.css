@@ -663,4 +663,8 @@ footer {
     height: 100%;
     object-fit: cover;
   }
+
+  .hero-content-inner .mySwiper .swiper-wrapper .swiper-slide img {
+    object-fit: cover;
+  }
 }
