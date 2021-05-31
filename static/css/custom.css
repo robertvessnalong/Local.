@@ -660,6 +660,7 @@ footer {
 
 @media only screen and (max-width: 975px) {
   .mySwiper .swiper-wrapper .swiper-slide img {
-    width: auto;
+    height: 100%;
+    object-fit: cover;
   }
 }
