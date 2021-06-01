@@ -4,6 +4,10 @@
 
 Note: This project is currently being constantly edited and considered not a final project.
 
+### Live Site:
+
+- Live Site can be found here []
+
 ### How to Use:
 
 - To use this application, you will need to install the requirements.txt file.
@@ -12,6 +16,11 @@ Note: This project is currently being constantly edited and considered not a fin
   - {'Authorization': 'Bearer %s' % os.environ.get('YELP_API_KEY', 'YOUR_YELP_API_KEY')}
 - The IPStack Key can be inserted here
   - geo_lookup = GeoLookup(os.environ.get('IPSTACK_API_KEY', 'YOUR_IP_STACK_KEY'))
+
+### To Test:
+
+- To test the files named "test", use the following command:
+  - python3 -m unittest "TEST_FILE_NAME"
 
 #### App Features Include:
 
