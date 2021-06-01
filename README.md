@@ -6,7 +6,7 @@ Note: This project is currently being constantly edited and considered not a fin
 
 ### Live Site:
 
-- Live Site can be found here []
+- Live Site can be found here [https://local-food-app.herokuapp.com/]
 
 ### How to Use:
 
